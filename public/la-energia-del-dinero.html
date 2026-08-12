@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La energía del dinero — Activismo Sagrado</title>
+<meta name="description" content="Un curso para transformar tu relación con el dinero desde la consciencia. La energía del dinero, por Activismo Sagrado.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="stylesheet" href="site.css">
+<script src="/analytics.js"></script>
+<style>
+  /* ===== page-specific: course landing ===== */
+  .course-hero{
+    padding: 32px 0 40px;
+    min-height: calc(100vh - 72px);
+    display:flex; flex-direction:column; justify-content:flex-start;
+    position:relative;
+  }
+  .course-hero .shell{ max-width: 880px; text-align:center; }
+  .course-hero h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size: clamp(44px, 6vw, 84px);
+    line-height:.94;
+    letter-spacing:-0.015em;
+    text-transform:uppercase;
+    margin: 14px 0 0;
+  }
+  .course-hero h1 em{
+    font-style:normal;
+    font-family:var(--font-script);
+    text-transform:none;
+    color: #FFE583;
+    font-weight:400;
+    display:inline-block;
+    transform: rotate(-3deg);
+    text-shadow: 0 4px 4px rgba(255,252,238,.22);
+  }
+  .course-hero .lede{
+    font-family:var(--font-script);
+    font-size: clamp(26px, 3.2vw, 40px);
+    color: var(--cream);
+    margin: 26px auto 0;
+    max-width: 24ch;
+    line-height:1.2;
+    text-shadow: 0 1px 0 rgba(0,0,0,.08);
+  }
+  .course-hero .intro{
+    font-size: 18px;
+    line-height:1.7;
+    opacity:.9;
+    max-width: 56ch;
+    margin: 24px auto 0;
+    text-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+  .course-hero .hero-actions{ justify-content:center; }
+  .start-badge{
+    display:inline-flex; flex-direction:column; align-items:center; gap:2px;
+    margin: 28px auto 4px;
+    color: var(--cream);
+    text-shadow: 0 1px 6px rgba(0,0,0,.3);
+  }
+  .start-badge .sb-label{
+    font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    opacity:.75;
+  }
+  .start-badge .sb-date{
+    font-family:var(--font-display); font-weight:800;
+    font-size: clamp(28px, 3.6vw, 40px); line-height:1; margin-top:2px;
+  }
+  .start-badge .sb-time{
+    font-size:14px; font-weight:600; letter-spacing:.04em; margin-top:6px; opacity:.9;
+  }
+
+  /* what you'll live */
+  .modules{ padding: 100px 0; }
+  .modules .head{ text-align:center; margin-bottom: 56px; }
+  .modules h2{
+    font-family:var(--font-display); font-weight:700;
+    font-size: clamp(36px, 4.5vw, 60px);
+    text-transform:uppercase; letter-spacing:-0.01em; line-height:1;
+  }
+  .module-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .module{
+    border-left: 3px solid #CC5027;
+    padding: 6px 0 6px 22px;
+    background: rgba(46,16,25,.10);
+    backdrop-filter: blur(2px);
+  }
+  .module .n{
+    font-family:var(--font-display); font-weight:600;
+    font-size:13px; letter-spacing:.2em; opacity:.6; margin-bottom:8px;
+  }
+  .module h3{
+    font-family:var(--font-display); font-weight:700; text-transform:uppercase;
+    font-size: 22px; line-height:1.1; margin-bottom:10px;
+  }
+  .module p{ font-size:15px; line-height:1.6; opacity:.85; text-shadow:0 1px 4px rgba(0,0,0,.25); }
+
+  /* logistics fact row */
+  .facts{
+    display:flex; flex-wrap:wrap; gap:0;
+    margin: 44px 0 0; border-top:1px solid var(--rule);
+  }
+  .facts div{ flex:1 1 180px; padding:22px 24px; border-left:1px solid var(--rule); }
+  .facts div:first-child{ border-left:none; padding-left:0; }
+  .facts .k{
+    font-family:var(--font-display); font-weight:600; font-size:11px;
+    letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-bottom:6px;
+  }
+  .facts .v{ font-family:var(--font-display); font-weight:700; font-size:22px; }
+
+  /* checklist */
+  .checklist{ list-style:none; margin:0; padding:0; display:grid; gap:16px; max-width:62ch; }
+  .checklist.center{ margin:48px auto 0; }
+  .checklist li{
+    display:flex; gap:14px; font-size:17px; line-height:1.55; opacity:.92;
+    text-shadow:0 1px 4px rgba(0,0,0,.25);
+  }
+  .checklist li::before{ content:'◇'; color:#FFE583; flex-shrink:0; margin-top:3px; }
+  .checklist li i{ opacity:.85; }
+
+  /* dynamics — rich component cards */
+  .dynamics{ display:grid; gap:18px; max-width:880px; margin:56px auto 0; }
+  .dyn{
+    display:grid; grid-template-columns:66px 1fr; gap:26px; align-items:flex-start;
+    background: rgba(255,252,238,.07);
+    border:1px solid rgba(255,252,238,.16);
+    border-radius:20px;
+    padding:26px 32px;
+    backdrop-filter: blur(4px);
+    transition: transform .25s ease, background .25s ease, border-color .25s ease;
+  }
+  .dyn:hover{
+    transform: translateX(6px);
+    background: rgba(255,252,238,.12);
+    border-color: rgba(255,252,238,.32);
+  }
+  .dyn .ico{
+    width:66px; height:66px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(245,101,53,.16);
+    border:1.5px solid #F56535;
+    color:#F56535;
+  }
+  .dyn .ico svg{ width:32px; height:32px; }
+  .dyn h3{
+    font-family:var(--font-display); font-weight:700; text-transform:uppercase;
+    font-size:19px; letter-spacing:.02em; margin-bottom:7px; color:#FFE583;
+    line-height:1.1;
+  }
+  .dyn p{ font-size:15.5px; line-height:1.6; opacity:.9; text-shadow:0 1px 4px rgba(0,0,0,.25); }
+  @media (max-width: 720px){
+    .dyn{ grid-template-columns:1fr; gap:16px; padding:24px; }
+  }
+
+  /* pricing */
+  .pricing{ padding: 100px 0 120px; }
+  .pricing .head{ text-align:center; margin-bottom: 64px; }
+  .pricing h2{
+    font-family:var(--font-display); font-weight:700;
+    font-size: clamp(36px, 4.5vw, 64px);
+    text-transform:uppercase; letter-spacing:-0.01em; line-height:1; margin-bottom:14px;
+  }
+  .pricing .sub{ font-family:var(--font-script); font-size:28px; color:#FFE583; }
+  .price-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 28px; align-items:stretch; }
+  .plan{
+    display:flex; flex-direction:column;
+    background: rgba(255,252,238,.10);
+    border: 1.5px solid rgba(255,252,238,.28);
+    backdrop-filter: blur(6px);
+    border-radius: 22px;
+    padding: 38px 30px;
+    position:relative;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .plan:hover{ transform: translateY(-6px); box-shadow: 0 30px 60px -30px rgba(46,16,25,.5); }
+  .plan.featured{
+    background: rgba(245,101,53,.92);
+    border-color: rgba(255,252,238,.5);
+  }
+  .plan .badge{
+    position:absolute; top:-13px; left:50%; transform:translateX(-50%);
+    background:#FFE583; color:#2E1019;
+    font-family:var(--font-display); font-weight:700; font-size:11px;
+    letter-spacing:.18em; text-transform:uppercase;
+    padding: 6px 16px; border-radius:999px; white-space:nowrap;
+  }
+  .plan .pname{
+    font-family:var(--font-display); font-weight:700; text-transform:uppercase;
+    font-size: 22px; letter-spacing:.02em; margin-bottom:6px;
+  }
+  .plan .ptag{ font-family:var(--font-script); font-size:22px; color:#FFE583; margin-bottom:22px; line-height:1.1; }
+  .plan.featured .ptag{ color:#FFFCEE; }
+  .plan .price{
+    font-family:var(--font-display); font-weight:700;
+    font-size: 44px; line-height:1; margin-bottom: 4px;
+  }
+  .plan .price .cur{ font-size:22px; opacity:.7; vertical-align:top; margin-right:4px; }
+  .plan .price-note{ font-size:13px; opacity:.7; margin-bottom:26px; }
+  .plan ul{ list-style:none; margin:0 0 30px; padding:0; display:grid; gap:12px; }
+  .plan li{ font-size:15px; line-height:1.45; display:flex; gap:10px; opacity:.92; }
+  .plan li::before{ content:'◇'; color:#FFE583; flex-shrink:0; }
+  .plan.featured li::before{ color:#FFFCEE; }
+  .plan .pay{
+    margin-top:auto;
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    padding: 16px 22px; border-radius:999px;
+    font-family:var(--font-display); font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    font-size:13px; text-decoration:none;
+    background: var(--accent); color: var(--cream);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .plan.featured .pay{ background:#FFFCEE; color:#2E1019; }
+  .plan .pay:hover{ transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(46,16,25,.6); }
+
+  .includes{
+    margin: 44px auto 0; max-width: 760px; text-align:center;
+    padding: 30px 32px;
+    background: rgba(255,252,238,.08);
+    border: 1.5px solid rgba(255,252,238,.22);
+    border-radius: 20px;
+  }
+  .includes-title{
+    font-family:var(--font-display); font-weight:700; text-transform:uppercase;
+    letter-spacing:.14em; font-size:13px; color:#FFE583; margin-bottom:20px;
+  }
+  .includes ul{
+    list-style:none; margin:0; padding:0;
+    display:flex; flex-wrap:wrap; justify-content:center; gap:14px 28px;
+  }
+  .includes li{ font-size:15px; line-height:1.4; display:flex; gap:9px; opacity:.95; }
+  .includes li::before{ content:'◇'; color:#FFE583; flex-shrink:0; }
+
+  .pay-note{ text-align:center; margin-top: 40px; font-size:14px; opacity:.75; }
+  .pay-note a{ color:#FFE583; }
+
+  @media (max-width: 980px){
+    .module-grid, .price-grid{ grid-template-columns: 1fr; }
+    .plan.featured{ order:-1; }
+  }
+</style>
+</head>
+<body class="theme-sobria">
+
+  <!-- ========= NAV (mismo header que la home) ========= -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="assets/905113d2-5017-4edc-8d6e-e16f390ff2d0.png" alt="AS" class="nav-logo">
+        <span class="wordmark">Activismo Sagrado</span>
+      </a>
+      <div class="nav-right">
+        <a href="#precios" class="nav-cta auth-when-out">Quiero inscribirme</a>
+        <span class="nav-auth">
+          <a class="nav-ingresar auth-when-out" href="/inscripcion?curso=la-energia-del-dinero">Ingresar</a>
+          <a class="nav-mycourses auth-when-in" href="/mis-cursos" style="display:none;">Mis cursos</a>
+          <button class="nav-salir auth-when-in" data-action="logout" style="display:none;">Salir</button>
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========= HERO ========= -->
+  <section id="top" class="course-hero">
+    <div class="shell">
+      <div class="eyebrow" style="justify-content:center;">Taller de 6 semanas · Activismo Sagrado</div>
+      <h1>La <em>energía</em><br>del dinero</h1>
+      <p class="lede">Cómo nos relacionamos con el dinero es como nos relacionamos con la vida.</p>
+      <p class="intro">
+        Un taller para reconfigurar la arquitectura mental, emocional y
+        energética de tu relación con el dinero. Para pasar de una economía
+        del miedo y la supervivencia a una de confianza y capacidad creativa,
+        donde el dinero deja de dominarte y empieza a financiar tu propósito.
+      </p>
+      <div class="start-badge">
+        <span class="sb-label">Comienza</span>
+        <span class="sb-date">24 de junio</span>
+        <span class="sb-time">Miércoles · 19 a 21 hs</span>
+      </div>
+      <div class="hero-actions">
+        <a href="#precios" class="btn btn-primary">Quiero inscribirme <span class="arrow">→</span></a>
+        <a href="#dinamica" class="btn btn-ghost">Ver la dinámica</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= PARA QUIÉN ========= -->
+  <section id="para-quien" class="manifesto">
+    <div class="shell">
+      <div class="section-label deep">¿Para quién es?</div>
+      <div class="manifesto-grid">
+        <div>
+          <h2>Para quienes sienten que <em>algo está roto</em> en su vínculo con el dinero.</h2>
+        </div>
+        <div>
+          <ul class="checklist">
+            <li>Sentís que corrés siempre detrás del dinero, que nunca alcanza.</li>
+            <li>Vivís una contradicción entre cómo vivís y lo que realmente valorás. <i>"Quiero pasar más tiempo con mi familia, y trabajo 12 horas al día."</i></li>
+            <li>Estás cansadx de medir tu valor a través del dinero y del merecimiento.</li>
+            <li>Sentís que la forma de habitar el trabajo, el dinero y la vida necesita transformarse.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= PROPÓSITO ========= -->
+  <section id="proposito" class="band teal">
+    <div class="shell">
+      <div class="section-label deep" style="opacity:.9;">El propósito</div>
+      <div class="band-grid">
+        <div>
+          <h2>De una economía del <em>miedo</em> a una de confianza.</h2>
+        </div>
+        <div class="band-body">
+          <p>
+            El dinero es un tema tabú. Queremos abrir la conversación y reconfigurar
+            la arquitectura mental, emocional y energética de tu relación con él.
+          </p>
+          <p>
+            Desafiar los mitos culturales y los mandatos familiares invisibles que
+            bloquean tu crecimiento, para pasar del miedo y la supervivencia a la
+            confianza y la capacidad creativa.
+          </p>
+          <p class="accent">El dinero deja de dominarte y empieza a financiar tu propósito.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= LA DINÁMICA ========= -->
+  <section id="dinamica" class="modules">
+    <div class="shell">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">La dinámica</div>
+        <h2>Qué va a pasar</h2>
+        <p class="intro" style="margin-top:22px;">
+          Un viaje de 6 semanas, 6 capítulos, en encuentros virtuales de 2 horas
+          cada miércoles. No venís a escuchar un monólogo teórico: venís a poner el cuerpo.
+        </p>
+      </div>
+
+      <div class="facts">
+        <div><div class="k">Comienza</div><div class="v">24 de junio</div></div>
+        <div><div class="k">Encuentros</div><div class="v">Miércoles · 19 a 21 hs</div></div>
+        <div><div class="k">Duración</div><div class="v">6 semanas · 2 hs</div></div>
+        <div><div class="k">Modalidad</div><div class="v">En vivo, online</div></div>
+      </div>
+
+      <div class="dynamics">
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4v3M26 8l-2.2 2.2M28 18h-3M6 8l2.2 2.2M4 18h3"/>
+              <path d="M11.5 19.5a6 6 0 1 1 9 0c-.9 1-1.5 1.8-1.5 3.5h-6c0-1.7-.6-2.5-1.5-3.5Z"/>
+              <path d="M13 27h6M14 24h4"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Cápsulas conceptuales disruptivas</h3>
+            <p>Cruzamos la mirada ontológica (tus creencias), la antroposófica (la historia y el sentido evolutivo del dinero) y las leyes energéticas.</p>
+          </div>
+        </div>
+
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="16" cy="7" r="3"/>
+              <path d="M16 10v9M16 13l-7 4M16 13l7 4M16 19l-4 8M16 19l4 8"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Experiencias vivenciales en vivo</h3>
+            <p>Dinámicas donde cada participante se adentra en sus propias preguntas. No venís a escuchar: venís a poner el cuerpo.</p>
+          </div>
+        </div>
+
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="16" cy="9" r="3"/>
+              <path d="M16 13c-3 2-5 5-5 9M16 13c3 2 5 5 5 9"/>
+              <path d="M7 24c2.5-2 5.5-3 9-3s6.5 1 9 3"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Meditación</h3>
+            <p>Para integrar lo trabajado y reprogramar la mente subconsciente, donde viven las creencias más profundas.</p>
+          </div>
+        </div>
+
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="10" r="3"/>
+              <circle cx="24" cy="10" r="3"/>
+              <circle cx="16" cy="23" r="3"/>
+              <path d="M11 10h10M10.4 12.4 13.6 20.6M21.6 12.4 18.4 20.6"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Trabajo en red</h3>
+            <p>Lo que te pasa a vos, seguramente a alguien más le pasa. Escuchar otras voces y aprender del vínculo que otros tienen con el dinero.</p>
+          </div>
+        </div>
+
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 10h7v6c0 3-2.2 5-5 5.5M17 10h7v6c0 3-2.2 5-5 5.5"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Testimonios</h3>
+            <p>Historias reales que cuestionan lo que aprendimos sobre el valor, el éxito y el dinero.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= RESULTADOS ========= -->
+  <section id="resultados" class="modules" style="padding-top:0;">
+    <div class="shell">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">Qué te llevás</div>
+        <h2>A dónde vas a llegar</h2>
+      </div>
+      <div class="module-grid">
+        <div class="module">
+          <div class="n">01</div>
+          <h3>Claridad</h3>
+          <p>Sobre cómo el sistema impacta tu forma de vivir y qué está en tus manos para transformar.</p>
+        </div>
+        <div class="module">
+          <div class="n">02</div>
+          <h3>Reprogramación</h3>
+          <p>Un nuevo vínculo con el dinero, sostenido desde la confianza y no desde el miedo.</p>
+        </div>
+        <div class="module">
+          <div class="n">03</div>
+          <h3>Herramientas</h3>
+          <p>Nuevas capacidades para habitar tu valor y el dinero de otra forma.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= PRECIOS ========= -->
+  <section id="precios" class="pricing">
+    <div class="shell">
+      <!-- Banner para alumnos ya inscriptos (se muestra por JS) -->
+      <div id="enrolled-banner" style="display:none; background:rgba(255,229,131,.14); border:1px solid rgba(255,229,131,.5); border-radius:18px; padding:34px 30px; text-align:center; max-width:620px; margin:0 auto;">
+        <div style="font-family:var(--font-script); font-size:26px; color:var(--coral); margin-bottom:8px;">¡Ya estás dentro!</div>
+        <h2 style="margin:0 0 12px;">Tu inscripción está confirmada</h2>
+        <p style="margin:0 auto 24px; max-width:460px; opacity:.85;">
+          Nos vemos el <strong>24 de junio a las 19 hs</strong>. Entrá al grupo de la
+          comunidad para recibir todo el material y los enlaces de los encuentros.
+        </p>
+        <a class="pay" href="https://chat.whatsapp.com/FRBBm7V401PAEQqJyI1APH" target="_blank" rel="noopener" style="display:inline-block; width:auto; padding:14px 30px;">Entrar al grupo de WhatsApp</a>
+      </div>
+
+      <div id="signup-content">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">Inscripción</div>
+        <h2>Elegí tu aporte</h2>
+        <div class="sub">vos ponés el precio</div>
+        <p class="intro" style="margin-top:22px;">
+          Los tres valores incluyen exactamente lo mismo. No hay diferencia en lo
+          que recibís: elegís según tu momento y tus posibilidades. Así, quien
+          puede aportar más sostiene a quien hoy aporta menos.
+        </p>
+      </div>
+
+      <div class="price-grid">
+        <!-- PLAN 1 -->
+        <div class="plan">
+          <div class="pname">Mínimo</div>
+          <div class="ptag">si hoy es lo que podés</div>
+          <div class="price"><span class="cur">$</span><span data-price="minimo">45.000</span></div>
+          <div class="price-note">pago único · acceso completo</div>
+          <a class="pay" href="/inscripcion?curso=la-energia-del-dinero&plan=minimo" data-mp-plan="minimo">Inscribirme</a>
+        </div>
+
+        <!-- PLAN 2 (destacado) -->
+        <div class="plan featured">
+          <div class="badge">Sugerido</div>
+          <div class="pname">Estándar</div>
+          <div class="ptag">aporte justo</div>
+          <div class="price"><span class="cur">$</span><span data-price="estandar">65.000</span></div>
+          <div class="price-note">pago único · acceso completo</div>
+          <a class="pay" href="/inscripcion?curso=la-energia-del-dinero&plan=estandar" data-mp-plan="estandar">Inscribirme</a>
+        </div>
+
+        <!-- PLAN 3 -->
+        <div class="plan">
+          <div class="pname">Abundante</div>
+          <div class="ptag">tu aporte sostiene a otrxs</div>
+          <div class="price"><span class="cur">$</span><span data-price="abundante">85.000</span></div>
+          <div class="price-note">pago único · acceso completo</div>
+          <a class="pay" href="/inscripcion?curso=la-energia-del-dinero&plan=abundante" data-mp-plan="abundante">Inscribirme</a>
+        </div>
+      </div>
+
+      <div class="includes">
+        <div class="includes-title">Los tres aportes incluyen lo mismo</div>
+        <ul>
+          <li>Los 6 encuentros en vivo</li>
+          <li>Meditaciones y material de cada capítulo</li>
+          <li>Grupo de la comunidad</li>
+          <li>Acompañamiento durante las 6 semanas</li>
+        </ul>
+      </div>
+
+      <p class="pay-note">
+        Valores en pesos argentinos. El pago se procesa de forma segura en
+        Mercado Pago y, una vez confirmado, recibís el acceso por mail.
+        ¿Dudas? <a href="https://chat.whatsapp.com/CZdbRKFK3M5J4nZg0qde25?mode=gi_t" target="_blank" rel="noopener">Escribinos</a>.
+      </p>
+      </div><!-- /#signup-content -->
+    </div>
+  </section>
+
+  <!-- ========= FOOTER ========= -->
+  <footer>
+    <div class="shell">
+      <div class="footer-bottom" style="border-top:none; padding-top:0;">
+        <span>© 2026 · Activismo Sagrado · Movimiento independiente.</span>
+        <span style="font-family:var(--font-script); font-size:18px;">somos amor · en acción</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Detección de inscripción: si el usuario ya pagó, mostramos el acceso en vez de los precios -->
+  <script src="/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (function(){
+      try {
+        var cfg = window.SUPABASE_CONFIG;
+        if (!cfg || !window.supabase) return;
+        var client = window.supabase.createClient(cfg.url, cfg.anonKey);
+        client.auth.getSession().then(function(res){
+          var session = res.data && res.data.session;
+          if (!session || !session.user) return;
+          client.from('enrollments')
+            .select('status')
+            .eq('user_id', session.user.id)
+            .eq('status', 'paid')
+            .limit(1)
+            .then(function(r){
+              if (r.data && r.data.length){
+                var banner = document.getElementById('enrolled-banner');
+                var content = document.getElementById('signup-content');
+                if (banner) banner.style.display = 'block';
+                if (content) content.style.display = 'none';
+              }
+            });
+        });
+      } catch(e){ /* sin sesión: dejamos los precios como están */ }
+    })();
+  </script>
+  <script src="/auth-nav.js"></script>
+  <script>
+    // Analytics: visita a la landing del curso + clics en "Inscribirme"
+    if (window.asTrack) asTrack('view_course_landing', { course: 'la-energia-del-dinero' });
+    document.querySelectorAll('a[href*="/inscripcion"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if (window.asTrack) asTrack('click_inscribirme', { plan: a.getAttribute('data-mp-plan') || 'na' });
+      });
+    });
+  </script>
+</body></html>

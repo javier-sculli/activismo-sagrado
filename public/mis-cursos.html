@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mis cursos — Activismo Sagrado</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="stylesheet" href="site.css">
+<script src="/analytics.js"></script>
+<style>
+  .mc-wrap{ max-width: 760px; margin: 0 auto; padding: 56px 22px 100px; min-height: calc(100vh - 72px); }
+
+  /* Encabezado de bienvenida */
+  .mc-head{ margin-bottom: 30px; }
+  .mc-eyebrow{ font-family:var(--font-script); font-size:24px; color:var(--coral); line-height:1; }
+  .mc-head h1{ font-family:var(--font-display); font-size: clamp(30px, 4.4vw, 46px); margin:6px 0 6px; }
+  .mc-head .who{ opacity:.65; font-size:15px; }
+
+  /* Tarjeta de curso */
+  .mc-card{
+    position:relative; background:var(--cream); color:#2E1019;
+    border:1px solid rgba(46,16,25,.1); border-radius:22px;
+    padding:30px 30px 28px; margin-bottom:22px; overflow:hidden;
+    box-shadow:0 10px 34px rgba(46,16,25,.07);
+  }
+  .mc-card::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--coral); }
+  .mc-card.is-pending::before{ background:#FFD24A; }
+
+  .mc-badge{ display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; letter-spacing:.03em; padding:6px 13px; border-radius:999px; margin-bottom:14px; }
+  .mc-badge::before{ content:""; width:8px; height:8px; border-radius:50%; }
+  .mc-badge.paid{ background:rgba(120,170,120,.18); border:1px solid rgba(120,170,120,.5); color:#2f5d2f; }
+  .mc-badge.paid::before{ background:#3f8b3f; }
+  .mc-badge.pending{ background:rgba(255,210,74,.22); border:1px solid rgba(214,168,0,.5); color:#8a6d00; }
+  .mc-badge.pending::before{ background:#d6a800; }
+
+  .mc-card h2{ font-family:var(--font-display); font-size:25px; margin:0 0 6px; }
+  .mc-card .lead{ opacity:.8; margin:0 0 22px; font-size:15px; line-height:1.5; }
+
+  /* Datos del curso */
+  .mc-facts{ display:grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap:16px 22px; padding:18px 0; margin:0 0 22px; border-top:1px solid rgba(46,16,25,.1); border-bottom:1px solid rgba(46,16,25,.1); }
+  .mc-fact .k{ font-size:11.5px; text-transform:uppercase; letter-spacing:.09em; opacity:.55; margin-bottom:3px; }
+  .mc-fact .v{ font-weight:600; font-size:15px; }
+
+  /* Nota de comunicación + material complementario */
+  .mc-note{ display:flex; gap:12px; align-items:flex-start; background:rgba(245,101,53,.07); border:1px solid rgba(245,101,53,.22); border-radius:14px; padding:14px 16px; margin:0 0 18px; font-size:14px; line-height:1.5; }
+  .mc-note .ic{ flex:0 0 auto; font-size:18px; line-height:1.3; }
+  .mc-note strong{ font-weight:700; }
+  .mc-materials-title{ font-size:12px; text-transform:uppercase; letter-spacing:.09em; opacity:.55; margin:4px 0 10px; }
+  .mc-materials-empty{ border:1px dashed rgba(46,16,25,.2); border-radius:12px; padding:20px; text-align:center; font-size:14px; opacity:.7; margin-bottom:22px; }
+
+  .mc-actions{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .mc-btn{ display:inline-flex; align-items:center; gap:8px; background:var(--coral); color:#fff; text-decoration:none; padding:13px 26px; border-radius:999px; font-weight:600; font-size:15px; transition:transform .15s, box-shadow .15s; }
+  .mc-btn:hover{ transform:translateY(-1px); box-shadow:0 10px 24px -10px var(--coral); }
+  .mc-btn.ghost{ background:transparent; color:var(--coral); border:1.5px solid var(--coral); }
+  .mc-btn.ghost:hover{ background:rgba(245,101,53,.08); box-shadow:none; }
+  .mc-hint{ font-size:13px; opacity:.6; }
+
+  /* Estados (cargando / sin sesión / vacío) */
+  .mc-state{ text-align:center; padding:90px 20px; opacity:.7; }
+  .mc-empty{ text-align:center; color:#2E1019; background:var(--cream); border:1px dashed rgba(46,16,25,.22); border-radius:22px; padding:50px 26px; }
+  .mc-empty p{ opacity:.75; margin:0 0 20px; }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="assets/905113d2-5017-4edc-8d6e-e16f390ff2d0.png" alt="AS" class="nav-logo">
+        <span class="wordmark">Activismo Sagrado</span>
+      </a>
+      <div class="nav-right">
+        <span class="nav-auth">
+          <a class="nav-ingresar auth-when-out" href="/inscripcion" style="display:none;">Ingresar</a>
+          <button class="auth-when-in" id="logout-btn">Salir</button>
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="mc-wrap">
+    <div id="state-loading" class="mc-state">Cargando tus cursos…</div>
+
+    <div id="state-anon" class="mc-state" style="display:none;">
+      <p>Necesitás iniciar sesión para ver tus cursos.</p>
+      <a class="mc-btn" href="/inscripcion?curso=la-energia-del-dinero">Iniciar sesión</a>
+    </div>
+
+    <div id="state-ready" style="display:none;">
+      <div class="mc-head">
+        <div class="mc-eyebrow">Tu espacio</div>
+        <h1 id="greeting">Mis cursos</h1>
+        <div class="who" id="who"></div>
+      </div>
+      <div id="courses"></div>
+    </div>
+  </main>
+
+  <script src="/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (function(){
+      var $ = function(id){ return document.getElementById(id); };
+      var cfg = window.SUPABASE_CONFIG;
+      if (!cfg || !window.supabase){ $('state-loading').textContent = 'No se pudo cargar.'; return; }
+      var client = window.supabase.createClient(cfg.url, cfg.anonKey);
+
+      var WHATSAPP = 'https://chat.whatsapp.com/FRBBm7V401PAEQqJyI1APH';
+      var COURSE = {
+        titulo: 'La energía del dinero',
+        lead: 'Un taller para transformar tu relación con el dinero desde la consciencia.',
+        inicio: '24 de junio', encuentros: 'Miércoles · 19 a 21 hs',
+        duracion: '6 semanas'
+      };
+      var PLAN_NOMBRE = { minimo:'Mínimo', estandar:'Estándar', abundante:'Abundante', becado:'Beca' };
+
+      $('logout-btn').onclick = function(){
+        client.auth.signOut().then(function(){ location.href = '/'; });
+      };
+
+      function show(id){ ['state-loading','state-anon','state-ready'].forEach(function(s){ $(s).style.display = (s===id)?'':'none'; }); }
+      function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+      function facts(plan){
+        var items = [
+          ['Comienza', COURSE.inicio],
+          ['Encuentros', COURSE.encuentros],
+          ['Duración', COURSE.duracion],
+          ['Tu aporte', PLAN_NOMBRE[plan] || '—']
+        ];
+        return '<div class="mc-facts">' + items.map(function(it){
+          return '<div class="mc-fact"><div class="k">'+it[0]+'</div><div class="v">'+esc(it[1])+'</div></div>';
+        }).join('') + '</div>';
+      }
+
+      function card(r){
+        var paid = r.status === 'paid';
+        var badge = paid
+          ? '<span class="mc-badge paid">Inscripción confirmada</span>'
+          : '<span class="mc-badge pending">Pago pendiente</span>';
+        var lead = paid
+          ? 'Ya tenés tu lugar. Entrá al grupo de la comunidad para recibir el material y los enlaces de cada encuentro.'
+          : 'Estás a un paso. Completá tu pago para asegurar tu lugar en el taller.';
+        var note = paid
+          ? '<div class="mc-note"><span class="ic">💬</span><div><strong>La comunicación principal del curso es por el grupo de WhatsApp.</strong> '
+            + 'Ahí compartimos los enlaces de los encuentros, recordatorios y novedades. Acá abajo vas a ir encontrando el material complementario.</div></div>'
+          : '';
+        var materiales = paid
+          ? '<div class="mc-materials-title">Material complementario</div>'
+            + '<div class="mc-materials-empty">Todavía no hay material publicado. Te avisamos por el grupo de WhatsApp cuando subamos algo.</div>'
+          : '';
+        var actions = paid
+          ? '<a class="mc-btn" href="'+WHATSAPP+'" target="_blank" rel="noopener">Entrar al grupo de WhatsApp</a>'
+            + '<a class="mc-btn ghost" href="/la-energia-del-dinero">Ver el taller</a>'
+          : '<a class="mc-btn" href="/inscripcion?curso=la-energia-del-dinero&plan='+(r.plan||'estandar')+'">Completar el pago</a>'
+            + '<span class="mc-hint">Tu lugar se confirma al acreditarse el pago.</span>';
+        return '<div class="mc-card'+(paid?'':' is-pending')+'">'
+          + badge
+          + '<h2>'+COURSE.titulo+'</h2>'
+          + '<p class="lead">'+lead+'</p>'
+          + facts(r.plan)
+          + note
+          + materiales
+          + '<div class="mc-actions">'+actions+'</div>'
+          + '</div>';
+      }
+
+      function render(rows, user){
+        var nombre = (user.user_metadata && user.user_metadata.full_name) || '';
+        var primer = nombre ? nombre.split(' ')[0] : '';
+        $('greeting').textContent = primer ? ('Hola, ' + primer) : 'Mis cursos';
+        $('who').textContent = user.email;
+        var cont = $('courses');
+        if (!rows || !rows.length){
+          cont.innerHTML = '<div class="mc-empty"><p>Todavía no estás inscripto a ningún curso.</p>'
+            + '<a class="mc-btn" href="/la-energia-del-dinero">Ver el taller</a></div>';
+          return;
+        }
+        cont.innerHTML = rows.map(card).join('');
+      }
+
+      client.auth.getSession().then(function(res){
+        var session = res.data && res.data.session;
+        if (!session || !session.user){ show('state-anon'); return; }
+        var user = session.user;
+        client.from('enrollments')
+          .select('plan,status,created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .then(function(r){
+            render(r.data || [], user);
+            show('state-ready');
+          });
+      });
+    })();
+  </script>
+</body></html>

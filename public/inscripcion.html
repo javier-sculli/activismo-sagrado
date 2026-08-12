@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inscripción — La energía del dinero</title>
+<meta name="description" content="Inscribite al taller La energía del dinero, de Activismo Sagrado.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="stylesheet" href="site.css">
+<script src="/analytics.js"></script>
+<style>
+  .auth-wrap{
+    min-height: calc(100vh - 72px);
+    display:flex; align-items:center; justify-content:center;
+    padding: 60px 20px 80px;
+  }
+  .auth-card{
+    width:100%; max-width: 460px;
+    background: rgba(255,252,238,.10);
+    border: 1.5px solid rgba(255,252,238,.28);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    padding: 40px 36px;
+    box-shadow: 0 30px 70px -34px rgba(46,16,25,.55);
+  }
+  .auth-card .eyebrow{ justify-content:center; margin-bottom:14px; }
+  .auth-card h1{
+    font-family:var(--font-display); font-weight:800;
+    font-size: clamp(26px, 3.4vw, 34px); line-height:1.05;
+    text-align:center; margin:0 0 6px;
+  }
+  .auth-card .sub{
+    text-align:center; font-family:var(--font-script);
+    font-size:22px; color:#FFE583; margin-bottom:8px;
+  }
+  /* resumen del plan elegido */
+  .plan-pill{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin: 14px auto 26px; padding:12px 18px;
+    background: rgba(255,229,131,.16);
+    border:1px solid rgba(255,229,131,.4);
+    border-radius:14px; font-size:14px;
+  }
+  .plan-pill b{ font-family:var(--font-display); font-weight:800; }
+  .plan-pill .price{ margin-left:auto; font-family:var(--font-display); font-weight:800; font-size:18px; }
+
+  .gbtn{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    width:100%; padding:13px 16px; border-radius:999px;
+    background:#FFFCEE; color:#2E1019; border:none; cursor:pointer;
+    font-family:var(--font-display); font-weight:700; font-size:14px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .gbtn:hover{ transform:translateY(-1px); box-shadow:0 12px 28px -14px rgba(0,0,0,.5); }
+  .gbtn svg{ width:18px; height:18px; }
+
+  .divider{ display:flex; align-items:center; gap:12px; margin:22px 0; opacity:.6; font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
+  .divider::before, .divider::after{ content:''; flex:1; height:1px; background:rgba(255,252,238,.3); }
+
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.75; margin-bottom:6px; }
+  .field input{
+    width:100%; box-sizing:border-box; padding:13px 15px;
+    background: rgba(255,252,238,.08);
+    border:1.5px solid rgba(255,252,238,.28);
+    border-radius:12px; color:var(--cream); font-size:15px;
+    outline:none; transition:border-color .2s, background .2s;
+  }
+  .field input:focus{ border-color:#FFE583; background:rgba(255,252,238,.14); }
+  .field input::placeholder{ color:rgba(255,252,238,.4); }
+
+  .submit{
+    width:100%; padding:15px; border:none; cursor:pointer; margin-top:6px;
+    background: var(--accent); color: var(--cream);
+    border-radius:999px;
+    font-family:var(--font-display); font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:13px;
+    transition: transform .2s, box-shadow .2s, opacity .2s;
+  }
+  .submit:hover{ transform:translateY(-2px); box-shadow:0 16px 34px -16px rgba(245,101,53,.7); }
+  .submit:disabled{ opacity:.55; cursor:default; transform:none; box-shadow:none; }
+
+  .switch{ text-align:center; margin-top:18px; font-size:14px; opacity:.85; }
+  .switch a{ color:#FFE583; cursor:pointer; text-decoration:underline; }
+
+  .msg{ margin-top:16px; padding:12px 14px; border-radius:12px; font-size:14px; line-height:1.4; display:none; }
+  .msg.show{ display:block; }
+  .msg.error{ background:rgba(204,80,39,.2); border:1px solid rgba(204,80,39,.55); }
+  .msg.ok{ background:rgba(120,170,120,.2); border:1px solid rgba(120,170,120,.55); }
+
+  .backlink{ text-align:center; margin-top:24px; }
+  .backlink a{ color:var(--cream); opacity:.7; font-size:13px; text-decoration:none; }
+  .backlink a:hover{ opacity:1; }
+
+  /* paso de pago */
+  #step-pago{ display:none; text-align:center; }
+  #step-pago.show{ display:block; }
+  #step-pago p{ line-height:1.6; opacity:.92; }
+
+  #step-ok{ display:none; text-align:center; }
+  #step-ok.show{ display:block; }
+  #step-ok p{ line-height:1.6; opacity:.92; }
+
+  .plan-select{ display:flex; flex-direction:column; gap:10px; margin:20px 0 24px; text-align:left; }
+  .plan-opt{
+    position:relative; cursor:pointer; width:100%;
+    display:grid; grid-template-columns:1fr auto; align-items:center; column-gap:10px; row-gap:2px;
+    padding:14px 18px; border-radius:14px;
+    background: rgba(255,252,238,.06);
+    border:1.5px solid rgba(255,252,238,.24);
+    color:var(--cream); font-family:inherit; text-align:left;
+    transition: border-color .2s, background .2s, transform .15s;
+  }
+  .plan-opt:hover{ border-color:rgba(255,229,131,.6); transform:translateY(-1px); }
+  .plan-opt.sel{ border-color:#FFE583; background:rgba(255,229,131,.14); }
+  .plan-opt .po-name{ font-family:var(--font-display); font-weight:800; font-size:16px; }
+  .plan-opt .po-price{ font-family:var(--font-display); font-weight:800; font-size:18px; }
+  .plan-opt .po-tag{ grid-column:1 / -1; font-size:13px; opacity:.7; }
+  .plan-opt .po-badge{
+    position:absolute; top:-9px; right:14px;
+    background:#FFE583; color:#2E1019;
+    font-family:var(--font-display); font-weight:700; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase;
+    padding:3px 10px; border-radius:999px;
+  }
+  .pay-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; box-sizing:border-box; padding:16px; border-radius:999px;
+    background:#FFE583; color:#2E1019; text-decoration:none;
+    font-family:var(--font-display); font-weight:800; letter-spacing:.06em;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .pay-btn:hover{ transform:translateY(-2px); box-shadow:0 16px 34px -16px rgba(255,229,131,.8); }
+  .pay-btn-ghost{ background:transparent; color:#FFE583; border:1.5px solid rgba(255,229,131,.6); }
+  .pay-btn-ghost:hover{ background:rgba(255,229,131,.1); box-shadow:none; }
+</style>
+</head>
+<body class="theme-sobria">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="assets/905113d2-5017-4edc-8d6e-e16f390ff2d0.png" alt="AS" class="nav-logo">
+        <span class="wordmark">Activismo Sagrado</span>
+      </a>
+      <a href="/la-energia-del-dinero" class="nav-cta">Volver al taller</a>
+    </div>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+
+      <!-- PASO 1: AUTENTICACIÓN -->
+      <div id="step-auth">
+        <div class="eyebrow" style="justify-content:center;">Inscripción</div>
+        <h1 id="auth-title">Creá tu cuenta</h1>
+
+        <button class="gbtn" id="google-btn" type="button" style="margin-top:8px;">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.46 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38z"/></svg>
+          Continuar con Google
+        </button>
+
+        <div class="divider">o con tu email</div>
+
+        <form id="auth-form">
+          <div class="field" id="name-field">
+            <label for="full_name">Nombre y apellido</label>
+            <input type="text" id="full_name" autocomplete="name" placeholder="Tu nombre">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" autocomplete="email" placeholder="tu@email.com" required>
+          </div>
+          <div class="field">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+          </div>
+          <button class="submit" id="submit-btn" type="submit">Crear cuenta y continuar</button>
+        </form>
+
+        <div class="switch" id="switch-line">
+          ¿Ya tenés cuenta? <a id="switch-link">Ingresá</a>
+        </div>
+
+        <div class="msg" id="msg"></div>
+      </div>
+
+      <!-- PASO 2: PAGO -->
+      <div id="step-pago">
+        <div class="eyebrow" style="justify-content:center;">Último paso</div>
+        <h1>¡Listo, <span id="pago-name">ya casi estás</span>!</h1>
+        <div id="test-banner" style="display:none; margin:14px 0 0; padding:10px 14px; border-radius:12px; background:rgba(255,229,131,.16); border:1px solid rgba(255,229,131,.5); font-size:13px; font-weight:700; letter-spacing:.04em;">⚙️ MODO PRUEBA · el botón usa el link de test</div>
+        <p style="margin:10px 0 4px;">Elegí tu aporte. Los tres incluyen exactamente lo mismo: vos elegís según tu momento.</p>
+
+        <div class="plan-select" id="plan-select">
+          <button type="button" class="plan-opt" data-plan="minimo">
+            <span class="po-name">Mínimo</span>
+            <span class="po-price">$45.000</span>
+            <span class="po-tag">si hoy es lo que podés</span>
+          </button>
+          <button type="button" class="plan-opt" data-plan="estandar">
+            <span class="po-badge">Sugerido</span>
+            <span class="po-name">Estándar</span>
+            <span class="po-price">$65.000</span>
+            <span class="po-tag">aporte justo</span>
+          </button>
+          <button type="button" class="plan-opt" data-plan="abundante">
+            <span class="po-name">Abundante</span>
+            <span class="po-price">$85.000</span>
+            <span class="po-tag">sostenés a otrxs</span>
+          </button>
+          <button type="button" class="plan-opt plan-beca" data-plan="becado" style="display:none;">
+            <span class="po-badge">Beca</span>
+            <span class="po-name">Aporte libre</span>
+            <span class="po-price">Vos elegís</span>
+            <span class="po-tag">acceso becado</span>
+          </button>
+        </div>
+
+        <div id="beca-box" style="display:none; margin:6px 0 4px; padding:14px 16px; border-radius:14px; background:rgba(255,229,131,.12); border:1px solid rgba(255,229,131,.45); text-align:left;">
+          <label for="beca-amount" style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Tu aporte (opcional)</label>
+          <input id="beca-amount" type="number" min="0" step="500" placeholder="0"
+                 style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(46,16,25,.25); font-size:15px; font-family:inherit; background:rgba(255,252,238,.85); color:#2E1019;">
+          <p style="font-size:12.5px; opacity:.75; margin:8px 0 0;">Si es una beca completa, dejalo en <b>0</b>. Tu lugar queda confirmado igual. 🌱</p>
+        </div>
+
+        <a class="pay-btn" id="pay-link" href="#">Pagar con Mercado Pago</a>
+        <p style="font-size:13px; opacity:.7; margin-top:14px;">El pago se procesa en Mercado Pago. Apenas se acredite, te enviamos el acceso al grupo por mail.</p>
+        <div class="backlink"><a href="/la-energia-del-dinero">Volver al taller</a></div>
+      </div>
+
+      <!-- PASO 3: PAGO CONFIRMADO -->
+      <div id="step-ok">
+        <div class="eyebrow" style="justify-content:center;">Inscripción confirmada</div>
+        <h1>¡Bienvenidx! 🎉</h1>
+        <p style="margin:16px 0 10px;">Tu pago se acreditó y tu lugar en <b>La energía del dinero</b> está reservado. 🌱</p>
+        <p style="margin:0 0 24px; font-size:15px; opacity:.85;">La comunicación principal del curso es por el <b>grupo de WhatsApp</b>: ahí compartimos los enlaces de cada encuentro, recordatorios y novedades. Y siempre podés volver a <b>Mis cursos</b> para ver toda la info del taller.</p>
+        <a class="pay-btn" href="https://chat.whatsapp.com/FRBBm7V401PAEQqJyI1APH" target="_blank" rel="noopener">Sumarme al grupo de WhatsApp</a>
+        <a class="pay-btn pay-btn-ghost" href="/mis-cursos" style="margin-top:12px;">Ir a Mis cursos</a>
+        <div class="backlink"><a href="/la-energia-del-dinero">Volver al taller</a></div>
+      </div>
+
+      <!-- ESTADO: verificando pago al volver de MP -->
+      <div id="step-checking" style="display:none; text-align:center;">
+        <div class="eyebrow" style="justify-content:center;">Un momento</div>
+        <h1>Verificando tu pago…</h1>
+        <p style="margin-top:16px;">Estamos confirmando con Mercado Pago. No cierres esta pantalla.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+  (function(){
+    var cfg = window.SUPABASE_CONFIG;
+    var client = window.supabase.createClient(cfg.url, cfg.anonKey);
+
+    // --- plan desde la URL ---
+    var params = new URLSearchParams(location.search);
+    var cursoRef = params.get('curso') || 'la-energia-del-dinero';
+    var isTest = params.get('test') === 'true';
+    var becaCode = params.get('beca') || '';   // si viene, habilita el aporte libre / beca
+    var planKey = params.get('plan');
+    if (!window.PLANES[planKey]) planKey = 'estandar';
+
+    var $ = function(id){ return document.getElementById(id); };
+    var msg = $('msg');
+    function showMsg(text, type){ msg.textContent = text; msg.className = 'msg show ' + type; }
+    function clearMsg(){ msg.className = 'msg'; }
+
+    // --- ¿volvemos de Mercado Pago? Verificamos el pago contra el servidor ---
+    var paymentId = params.get('payment_id') || params.get('collection_id');
+    if (paymentId) {
+      $('step-auth').style.display = 'none';
+      $('step-checking').style.display = 'block';
+      fetch('/api/verify-payment?payment_id=' + encodeURIComponent(paymentId))
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          $('step-checking').style.display = 'none';
+          if (res && res.paid) {
+            $('step-ok').classList.add('show');
+            if (window.asTrack) asTrack('purchase', { items: ['la-energia-del-dinero'] });
+          } else {
+            // no confirmado todavía: mostramos el paso de pago de nuevo
+            $('step-auth').style.display = 'none';
+            $('step-pago').classList.add('show');
+          }
+        })
+        .catch(function(){ $('step-checking').style.display = 'none'; $('step-pago').classList.add('show'); });
+      return; // cortamos el flujo normal de auth
+    }
+
+    // --- modo: registro vs login ---
+    var mode = 'signup';
+    function setMode(m){
+      mode = m;
+      if (m === 'signup'){
+        $('auth-title').textContent = 'Creá tu cuenta';
+        $('name-field').style.display = '';
+        $('submit-btn').textContent = 'Crear cuenta y continuar';
+        $('switch-line').innerHTML = '¿Ya tenés cuenta? <a id="switch-link">Ingresá</a>';
+      } else {
+        $('auth-title').textContent = 'Ingresá a tu cuenta';
+        $('name-field').style.display = 'none';
+        $('submit-btn').textContent = 'Ingresar y continuar';
+        $('switch-line').innerHTML = '¿No tenés cuenta? <a id="switch-link">Registrate</a>';
+      }
+      $('switch-link').onclick = function(){ setMode(mode === 'signup' ? 'login' : 'signup'); clearMsg(); };
+    }
+    setMode('signup');
+
+    var currentUser = null;
+    // si el link trae código de beca, arrancamos con la opción becada elegida
+    var selectedPlan = becaCode ? 'becado' : planKey; // default (URL si vino, o 'estandar')
+
+    // --- pasar al paso de pago tras autenticarse ---
+    function irAlPago(user){
+      currentUser = user;
+      $('step-auth').style.display = 'none';
+      $('step-pago').classList.add('show');
+      var nombre = (user.user_metadata && user.user_metadata.full_name) || '';
+      if (nombre) $('pago-name').textContent = nombre.split(' ')[0];
+      if (isTest) $('test-banner').style.display = 'block';
+      // Mostramos la opción de beca SOLO si vino el código en el link.
+      if (becaCode){ var bp = document.querySelector('.plan-beca'); if (bp) bp.style.display = ''; }
+      selectPlan(selectedPlan);
+    }
+
+    // --- selector de plan en vivo ---
+    var opts = document.querySelectorAll('.plan-opt');
+    function selectPlan(key){
+      var esBeca = (key === 'becado' && becaCode);
+      if (!esBeca && !window.PLANES[key]) key = 'estandar';
+      selectedPlan = key;
+      opts.forEach(function(o){ o.classList.toggle('sel', o.getAttribute('data-plan') === key); });
+      $('beca-box').style.display = esBeca ? '' : 'none';
+      var payLink = $('pay-link');
+      payLink.style.opacity = '';
+      payLink.style.cursor = '';
+      if (esBeca){
+        payLink.textContent = 'Confirmar mi beca';
+      } else {
+        payLink.textContent = isTest
+          ? 'Pagar (PRUEBA · $1) con Mercado Pago'
+          : 'Pagar ' + window.PLANES[key].precio + ' con Mercado Pago';
+      }
+    }
+    opts.forEach(function(o){
+      o.onclick = function(){ selectPlan(o.getAttribute('data-plan')); };
+    });
+
+    // --- click en pagar: registrar inscripción y crear la preferencia de pago en el server ---
+    $('pay-link').onclick = async function(e){
+      e.preventDefault();
+      if (!currentUser) return;
+      var btn = this;
+      var prev = btn.textContent;
+      btn.style.opacity = '.7';
+      btn.style.pointerEvents = 'none';
+
+      // --- camino BECA: pago ficticio validado en el server, va a Mis cursos ---
+      if (selectedPlan === 'becado' && becaCode){
+        btn.textContent = 'Confirmando…';
+        try {
+          var aporte = parseInt(($('beca-amount').value || '0'), 10) || 0;
+          var rb = await fetch('/api/beca-enroll', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: currentUser.id,
+              email: currentUser.email,
+              code: becaCode,
+              amount: aporte
+            })
+          });
+          var db = await rb.json();
+          if (rb.ok && db && db.ok){
+            if (window.asTrack) asTrack('purchase', { plan: 'becado', beca: true });
+            window.location.href = '/mis-cursos';
+          } else {
+            btn.textContent = prev;
+            btn.style.opacity = '';
+            btn.style.pointerEvents = '';
+            showMsg('No pudimos validar la beca. Revisá el link o escribinos.', 'error');
+          }
+        } catch(err){
+          btn.textContent = prev;
+          btn.style.opacity = '';
+          btn.style.pointerEvents = '';
+          showMsg('No pudimos validar la beca. Probá de nuevo en un momento.', 'error');
+        }
+        return;
+      }
+
+      btn.textContent = 'Generando pago…';
+      if (window.asTrack) asTrack('begin_checkout', { plan: selectedPlan });
+      try {
+        // Registramos (o dejamos) la inscripción como pendiente con el plan elegido.
+        try {
+          await client.from('enrollments').insert({
+            user_id: currentUser.id,
+            email: currentUser.email,
+            full_name: (currentUser.user_metadata && currentUser.user_metadata.full_name) || null,
+            plan: selectedPlan,
+            status: 'pending'
+          });
+        } catch(err){ /* si ya existe, seguimos igual */ }
+
+        // El server fija el monto y arma el checkout con external_reference = user_id.
+        var resp = await fetch('/api/create-preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            plan: selectedPlan,
+            test: isTest,
+            user_id: currentUser.id,
+            email: currentUser.email
+          })
+        });
+        var data = await resp.json();
+        if (data && data.init_point){
+          window.location.href = data.init_point;
+        } else {
+          btn.textContent = prev;
+          btn.style.opacity = '';
+          btn.style.pointerEvents = '';
+          showMsg('No pudimos iniciar el pago. Probá de nuevo en un momento.', 'error');
+        }
+      } catch(err){
+        btn.textContent = prev;
+        btn.style.opacity = '';
+        btn.style.pointerEvents = '';
+        showMsg('No pudimos iniciar el pago. Probá de nuevo en un momento.', 'error');
+      }
+    };
+
+    // --- si ya hay sesión (vuelta de Google): si ya pagó → mis cursos; si no → pago ---
+    client.auth.getSession().then(async function(res){
+      var session = res.data.session;
+      if (!session || !session.user) return;
+      var user = session.user;
+      try {
+        var enr = await client.from('enrollments')
+          .select('status')
+          .eq('user_id', user.id)
+          .eq('status', 'paid')
+          .limit(1);
+        if (enr.data && enr.data.length){ location.replace('/mis-cursos'); return; }
+      } catch (e) {}
+      irAlPago(user);
+    });
+
+    // --- Google ---
+    $('google-btn').onclick = function(){
+      clearMsg();
+      client.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: location.origin + '/inscripcion?curso=' + cursoRef + '&plan=' + planKey + (isTest ? '&test=true' : '') + (becaCode ? '&beca=' + encodeURIComponent(becaCode) : '') }
+      });
+    };
+
+    // --- email/password ---
+    $('auth-form').onsubmit = async function(e){
+      e.preventDefault();
+      clearMsg();
+      var email = $('email').value.trim();
+      var password = $('password').value;
+      var fullName = $('full_name').value.trim();
+      var btn = $('submit-btn');
+      btn.disabled = true;
+
+      try {
+        if (mode === 'signup'){
+          var r = await client.auth.signUp({
+            email: email, password: password,
+            options: { data: { full_name: fullName } }
+          });
+          if (r.error) throw r.error;
+          if (r.data.session && r.data.session.user){
+            irAlPago(r.data.session.user);
+          } else {
+            // requiere confirmación por email
+            showMsg('Te enviamos un mail para confirmar tu cuenta. Confirmalo y volvé a ingresar para completar el pago.', 'ok');
+          }
+        } else {
+          var l = await client.auth.signInWithPassword({ email: email, password: password });
+          if (l.error) throw l.error;
+          irAlPago(l.data.user);
+        }
+      } catch(err){
+        var m = (err && err.message) || 'Ocurrió un error. Probá de nuevo.';
+        if (/already registered/i.test(m)) m = 'Ese email ya está registrado. Probá ingresar.';
+        if (/Invalid login/i.test(m)) m = 'Email o contraseña incorrectos.';
+        showMsg(m, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    };
+  })();
+  </script>
+
+</body></html>

@@ -1,0 +1,98 @@
+[
+  {
+    "uuid": "905113d2-5017-4edc-8d6e-e16f390ff2d0",
+    "mime": "image/png",
+    "bytes": 238898,
+    "file": "905113d2-5017-4edc-8d6e-e16f390ff2d0.png"
+  },
+  {
+    "uuid": "cc378852-4b47-4484-82b4-dd053b007e08",
+    "mime": "text/javascript",
+    "bytes": 109931,
+    "file": "cc378852-4b47-4484-82b4-dd053b007e08.javascript"
+  },
+  {
+    "uuid": "bac5e525-11eb-47dc-8408-c7f068556400",
+    "mime": "text/javascript",
+    "bytes": 1080227,
+    "file": "bac5e525-11eb-47dc-8408-c7f068556400.javascript"
+  },
+  {
+    "uuid": "a6062add-6f3f-42d6-a4df-49466fe66a16",
+    "mime": "text/javascript",
+    "bytes": 3137752,
+    "file": "a6062add-6f3f-42d6-a4df-49466fe66a16.javascript"
+  },
+  {
+    "uuid": "8e192e91-e287-4b1f-9eed-f9e49bcd6538",
+    "mime": "application/javascript",
+    "bytes": 4156,
+    "file": "8e192e91-e287-4b1f-9eed-f9e49bcd6538.javascript"
+  },
+  {
+    "uuid": "2ab05204-5dd9-4f7e-8796-732d8780423b",
+    "mime": "text/jsx",
+    "bytes": 25802,
+    "file": "2ab05204-5dd9-4f7e-8796-732d8780423b.jsx"
+  },
+  {
+    "uuid": "a0248796-d9c7-497e-a56c-a533a929e85e",
+    "mime": "font/woff2",
+    "bytes": 8804,
+    "file": "a0248796-d9c7-497e-a56c-a533a929e85e.woff2"
+  },
+  {
+    "uuid": "5ec261a3-0932-4803-80cf-2d747c54f4e0",
+    "mime": "font/woff2",
+    "bytes": 14540,
+    "file": "5ec261a3-0932-4803-80cf-2d747c54f4e0.woff2"
+  },
+  {
+    "uuid": "9989acf6-0405-4f2e-97c9-be0e88192d75",
+    "mime": "font/woff2",
+    "bytes": 10312,
+    "file": "9989acf6-0405-4f2e-97c9-be0e88192d75.woff2"
+  },
+  {
+    "uuid": "b7326b60-e4a0-4910-aee7-54a3e02dc329",
+    "mime": "font/woff2",
+    "bytes": 25472,
+    "file": "b7326b60-e4a0-4910-aee7-54a3e02dc329.woff2"
+  },
+  {
+    "uuid": "315f7afe-fa30-4241-8b0f-bf2b57414ef7",
+    "mime": "font/woff2",
+    "bytes": 32988,
+    "file": "315f7afe-fa30-4241-8b0f-bf2b57414ef7.woff2"
+  },
+  {
+    "uuid": "4c55dde1-0e24-45e7-aa8c-82c0e5212f22",
+    "mime": "font/woff2",
+    "bytes": 9112,
+    "file": "4c55dde1-0e24-45e7-aa8c-82c0e5212f22.woff2"
+  },
+  {
+    "uuid": "979973bb-143f-4182-9f47-99dfb7193e2d",
+    "mime": "font/woff2",
+    "bytes": 15988,
+    "file": "979973bb-143f-4182-9f47-99dfb7193e2d.woff2"
+  },
+  {
+    "uuid": "fe70ba36-a15e-4711-a780-d0a3a6f0555f",
+    "mime": "font/woff2",
+    "bytes": 11776,
+    "file": "fe70ba36-a15e-4711-a780-d0a3a6f0555f.woff2"
+  },
+  {
+    "uuid": "cf05c8bd-217f-4180-8a9e-bf251bee9441",
+    "mime": "font/woff2",
+    "bytes": 35776,
+    "file": "cf05c8bd-217f-4180-8a9e-bf251bee9441.woff2"
+  },
+  {
+    "uuid": "543e1605-7d4c-40bb-976f-12f6d070f70f",
+    "mime": "font/woff2",
+    "bytes": 50524,
+    "file": "543e1605-7d4c-40bb-976f-12f6d070f70f.woff2"
+  }
+]

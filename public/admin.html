@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de inscriptos — Activismo Sagrado</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="site.css">
+<style>
+  .ad-wrap{ max-width: 1100px; margin: 0 auto; padding: 48px 22px 100px; min-height: calc(100vh - 72px); }
+
+  .ad-head{ display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:28px; }
+  .ad-eyebrow{ font-family:var(--font-script); font-size:24px; color:var(--coral); line-height:1; }
+  .ad-head h1{ font-family:var(--font-display); font-size: clamp(28px, 4vw, 42px); margin:6px 0 0; }
+  .ad-head .sub{ opacity:.6; font-size:14px; margin-top:4px; }
+  .ad-toolbar{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  .ad-btn{ display:inline-flex; align-items:center; gap:7px; background:var(--coral); color:#fff; text-decoration:none; border:none; cursor:pointer; padding:11px 20px; border-radius:999px; font-weight:600; font-size:14px; font-family:inherit; transition:transform .15s, box-shadow .15s; }
+  .ad-btn:hover{ transform:translateY(-1px); box-shadow:0 10px 24px -10px var(--coral); }
+  .ad-btn.ghost{ background:transparent; color:var(--coral); border:1.5px solid var(--coral); }
+  .ad-btn.ghost:hover{ background:rgba(245,101,53,.08); box-shadow:none; }
+
+  /* Login */
+  .ad-login{ max-width:380px; margin:80px auto; text-align:center; }
+  .ad-login h2{ font-family:var(--font-display); font-size:26px; margin:0 0 6px; }
+  .ad-login p{ opacity:.65; font-size:14px; margin:0 0 22px; }
+  .ad-login input{ width:100%; box-sizing:border-box; padding:13px 16px; border-radius:12px; border:1px solid rgba(46,16,25,.25); font-size:15px; margin-bottom:14px; font-family:inherit; }
+  .ad-login .err{ color:#c0392b; font-size:13.5px; min-height:18px; margin-bottom:10px; }
+  .ad-login .ad-btn{ width:100%; justify-content:center; }
+
+  /* Stats */
+  .ad-stats{ display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap:16px; margin-bottom:28px; }
+  .ad-stat{ background:var(--cream); color:#2E1019; border:1px solid rgba(46,16,25,.1); border-radius:18px; padding:20px 22px; box-shadow:0 10px 30px rgba(46,16,25,.06); }
+  .ad-stat .k{ font-size:11.5px; text-transform:uppercase; letter-spacing:.09em; opacity:.55; margin-bottom:8px; }
+  .ad-stat .v{ font-family:var(--font-display); font-size:30px; line-height:1; }
+  .ad-stat .v small{ font-size:15px; opacity:.6; font-family:inherit; }
+
+  /* Tabla */
+  .ad-tablewrap{ background:var(--cream); color:#2E1019; border:1px solid rgba(46,16,25,.1); border-radius:18px; overflow-x:auto; box-shadow:0 10px 30px rgba(46,16,25,.06); }
+  table.ad-table{ width:100%; border-collapse:collapse; font-size:14px; min-width:760px; }
+  .ad-table th, .ad-table td{ text-align:left; padding:13px 16px; border-bottom:1px solid rgba(46,16,25,.08); white-space:nowrap; }
+  .ad-table th{ font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; opacity:.6; font-weight:600; position:sticky; top:0; background:var(--cream); }
+  .ad-table tr:last-child td{ border-bottom:none; }
+  .ad-table td.wrap{ white-space:normal; }
+
+  .pill{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; padding:4px 11px; border-radius:999px; }
+  .pill::before{ content:""; width:7px; height:7px; border-radius:50%; }
+  .pill.paid{ background:rgba(120,170,120,.18); color:#2f5d2f; }
+  .pill.paid::before{ background:#3f8b3f; }
+  .pill.pending{ background:rgba(255,210,74,.22); color:#8a6d00; }
+  .pill.pending::before{ background:#d6a800; }
+  .pill.cancelled{ background:rgba(192,57,43,.12); color:#a83227; }
+  .pill.cancelled::before{ background:#c0392b; }
+  .pill.beca{ background:rgba(124,92,196,.16); color:#5b3f9e; }
+  .pill.beca::before{ background:#7c5cc4; }
+
+  .ad-state{ text-align:center; padding:80px 20px; opacity:.7; }
+  .ad-search{ padding:10px 16px; border-radius:999px; border:1px solid rgba(46,16,25,.25); font-size:14px; font-family:inherit; min-width:220px; }
+  .ad-note{ font-size:12.5px; opacity:.55; margin-top:14px; }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="assets/905113d2-5017-4edc-8d6e-e16f390ff2d0.png" alt="AS" class="nav-logo">
+        <span class="wordmark">Activismo Sagrado</span>
+      </a>
+    </div>
+  </nav>
+
+  <main class="ad-wrap">
+    <!-- Login -->
+    <div id="login" class="ad-login" style="display:none;">
+      <h2>Panel de inscriptos</h2>
+      <p>Ingresá la clave de acceso para ver las inscripciones.</p>
+      <input id="pass" type="password" placeholder="Clave de acceso" autocomplete="current-password">
+      <div class="err" id="login-err"></div>
+      <button class="ad-btn" id="login-btn">Entrar</button>
+    </div>
+
+    <!-- Estado de carga -->
+    <div id="loading" class="ad-state">Cargando inscriptos…</div>
+
+    <!-- Panel -->
+    <div id="panel" style="display:none;">
+      <div class="ad-head">
+        <div>
+          <div class="ad-eyebrow">Activismo Sagrado</div>
+          <h1>Inscriptos</h1>
+          <div class="sub" id="updated"></div>
+        </div>
+        <div class="ad-toolbar">
+          <input class="ad-search" id="search" type="search" placeholder="Buscar por nombre o email…">
+          <button class="ad-btn ghost" id="refresh">Actualizar</button>
+          <button class="ad-btn ghost" id="csv">Descargar CSV</button>
+          <button class="ad-btn ghost" id="logout">Salir</button>
+        </div>
+      </div>
+
+      <div class="ad-stats" id="stats"></div>
+
+      <div class="ad-tablewrap">
+        <table class="ad-table">
+          <thead>
+            <tr>
+              <th>Nombre</th><th>Email</th><th>Plan</th><th>Estado</th>
+              <th>Inscripto</th><th>Pagado</th><th>ID de pago (MP)</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="ad-note">Datos sensibles. Esta página es temporal y de acceso compartido — no la compartas fuera del equipo.</div>
+    </div>
+  </main>
+
+  <script>
+  (function(){
+    var $ = function(id){ return document.getElementById(id); };
+    var KEY_STORE = 'as_admin_key';
+    var PLAN_PRICE = { minimo: 45000, estandar: 65000, abundante: 85000 };
+    var PLAN_NOMBRE = { minimo:'Mínimo', estandar:'Estándar', abundante:'Abundante', becado:'Beca' };
+
+    // Aporte voluntario de una beca, codificado en mp_payment_id como BECA-<monto>-<ts>
+    function becaAporte(r){ var m = /^BECA-(\d+)-/.exec(r.mp_payment_id||''); return m ? parseInt(m[1],10) : 0; }
+    var allRows = [];
+
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+    function show(id){ ['login','loading','panel'].forEach(function(s){ $(s).style.display = (s===id)?'':'none'; }); }
+
+    function fmtDate(s){
+      if(!s) return '—';
+      var d = new Date(s);
+      if (isNaN(d)) return '—';
+      return d.toLocaleString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+    function fmtMoney(n){ return '$' + (n||0).toLocaleString('es-AR'); }
+
+    function renderStats(rows){
+      var total = rows.length;
+      var paid = rows.filter(function(r){ return r.status==='paid'; });
+      var becados = rows.filter(function(r){ return r.status==='paid' && r.plan==='becado'; }).length;
+      var pagados = paid.length - becados;
+      var pending = rows.filter(function(r){ return r.status==='pending'; }).length;
+      var recaudado = paid.reduce(function(acc,r){ return acc + (PLAN_PRICE[r.plan] || becaAporte(r) || 0); }, 0);
+      var stats = [
+        ['Total inscriptos', total],
+        ['Pagados', pagados],
+        ['Becados', becados],
+        ['Pendientes', pending],
+        ['Recaudado', fmtMoney(recaudado)]
+      ];
+      $('stats').innerHTML = stats.map(function(s){
+        return '<div class="ad-stat"><div class="k">'+s[0]+'</div><div class="v">'+esc(s[1])+'</div></div>';
+      }).join('');
+    }
+
+    function renderRows(rows){
+      if (!rows.length){ $('rows').innerHTML = '<tr><td colspan="7" class="ad-state">Sin inscriptos.</td></tr>'; return; }
+      $('rows').innerHTML = rows.map(function(r){
+        var st = r.status || 'pending';
+        var beca = r.plan === 'becado';
+        var pillClass = beca && st==='paid' ? 'beca' : st;
+        var label = beca && st==='paid' ? 'Becado'
+          : st==='paid' ? 'Pagado' : st==='cancelled' ? 'Cancelado' : 'Pendiente';
+        return '<tr>'
+          + '<td class="wrap">'+esc(r.full_name || '—')+'</td>'
+          + '<td>'+esc(r.email)+'</td>'
+          + '<td>'+esc(PLAN_NOMBRE[r.plan] || r.plan || '—')+'</td>'
+          + '<td><span class="pill '+esc(pillClass)+'">'+label+'</span></td>'
+          + '<td>'+fmtDate(r.created_at)+'</td>'
+          + '<td>'+fmtDate(r.paid_at)+'</td>'
+          + '<td>'+esc(r.mp_payment_id || '—')+'</td>'
+          + '</tr>';
+      }).join('');
+    }
+
+    function applyFilter(){
+      var q = ($('search').value || '').toLowerCase().trim();
+      var rows = !q ? allRows : allRows.filter(function(r){
+        return (r.full_name||'').toLowerCase().indexOf(q) >= 0 || (r.email||'').toLowerCase().indexOf(q) >= 0;
+      });
+      renderRows(rows);
+    }
+
+    function downloadCSV(){
+      var head = ['Nombre','Email','Plan','Estado','Inscripto','Pagado','ID pago MP'];
+      var lines = [head];
+      allRows.forEach(function(r){
+        var estado = (r.plan==='becado' && r.status==='paid') ? 'becado' : (r.status||'');
+        lines.push([ r.full_name||'', r.email||'', PLAN_NOMBRE[r.plan]||r.plan||'', estado,
+          fmtDate(r.created_at), fmtDate(r.paid_at), r.mp_payment_id||'' ]);
+      });
+      var csv = lines.map(function(row){
+        return row.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
+      }).join('\r\n');
+      var blob = new Blob(['﻿'+csv], { type:'text/csv;charset=utf-8;' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'inscriptos-' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function load(key){
+      show('loading');
+      fetch('/api/admin/enrollments', { headers: { 'x-admin-key': key } })
+        .then(function(res){
+          if (res.status === 401){ localStorage.removeItem(KEY_STORE); $('login-err').textContent = 'Clave incorrecta.'; show('login'); return null; }
+          if (res.status === 503){ $('login-err').textContent = 'El panel no está configurado en el servidor.'; show('login'); return null; }
+          if (!res.ok){ $('login-err').textContent = 'Error del servidor ('+res.status+').'; show('login'); return null; }
+          return res.json();
+        })
+        .then(function(data){
+          if (!data) return;
+          localStorage.setItem(KEY_STORE, key);
+          allRows = data.enrollments || [];
+          renderStats(allRows);
+          renderRows(allRows);
+          $('updated').textContent = 'Actualizado ' + fmtDate(new Date().toISOString());
+          show('panel');
+        })
+        .catch(function(){ $('login-err').textContent = 'No se pudo conectar.'; show('login'); });
+    }
+
+    $('login-btn').onclick = function(){
+      var v = ($('pass').value || '').trim();
+      if (!v){ $('login-err').textContent = 'Ingresá la clave.'; return; }
+      load(v);
+    };
+    $('pass').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('login-btn').click(); });
+    $('refresh').onclick = function(){ load(localStorage.getItem(KEY_STORE)); };
+    $('logout').onclick = function(){ localStorage.removeItem(KEY_STORE); $('pass').value=''; $('login-err').textContent=''; show('login'); };
+    $('search').addEventListener('input', applyFilter);
+    $('csv').onclick = downloadCSV;
+
+    var saved = localStorage.getItem(KEY_STORE);
+    if (saved) load(saved); else show('login');
+  })();
+  </script>
+</body></html>

@@ -2,9 +2,10 @@
   "name": "activismo-sagrado",
   "version": "1.0.0",
   "scripts": {
-    "start": "serve -s . -l ${PORT:-3000}"
+    "start": "node server.js"
   },
   "dependencies": {
-    "serve": "^14.2.3"
+    "@supabase/supabase-js": "^2.45.0",
+    "express": "^4.19.2"
   }
 }
