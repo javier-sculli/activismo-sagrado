@@ -55,6 +55,7 @@
 
   .ad-state{ text-align:center; padding:80px 20px; opacity:.7; }
   .ad-search{ padding:10px 16px; border-radius:999px; border:1px solid rgba(46,16,25,.25); font-size:14px; font-family:inherit; min-width:220px; }
+  .ad-select{ padding:10px 16px; border-radius:999px; border:1px solid rgba(46,16,25,.25); font-size:14px; font-family:inherit; background:var(--cream); color:#2E1019; font-weight:600; cursor:pointer; outline:none; }
   .ad-note{ font-size:12.5px; opacity:.55; margin-top:14px; }
 </style>
 </head>
@@ -86,11 +87,15 @@
       <div class="ad-head">
         <div>
           <div class="ad-eyebrow">Activismo Sagrado</div>
-          <h1>Inscriptos — Taller: La Post Humanidad</h1>
+          <h1>Inscriptos</h1>
           <div class="sub" id="updated"></div>
         </div>
         <div class="ad-toolbar">
-          <input class="ad-search" id="search" type="search" placeholder="Buscar por nombre, email o celular…">
+          <select class="ad-select" id="workshop-select">
+            <option value="taller-ia-la-post-humanidad">Taller: La Post Humanidad</option>
+            <option value="la-energia-del-dinero">Curso: La Energía del Dinero</option>
+          </select>
+          <input class="ad-search" id="search" type="search" placeholder="Buscar…">
           <button class="ad-btn ghost" id="refresh">Actualizar</button>
           <button class="ad-btn ghost" id="csv">Descargar CSV</button>
           <button class="ad-btn ghost" id="logout">Salir</button>
@@ -101,7 +106,7 @@
 
       <div class="ad-tablewrap">
         <table class="ad-table">
-          <thead>
+          <thead id="thead">
             <tr>
               <th>Nombre</th><th>Email</th><th>Teléfono</th><th>Aporte</th><th>Estado</th>
               <th>Inscripto</th><th>Pagado</th><th>ID de pago (MP)</th>
@@ -118,8 +123,13 @@
   (function(){
     var $ = function(id){ return document.getElementById(id); };
     var KEY_STORE = 'as_admin_key';
+    var PLAN_PRICE = { minimo: 45000, estandar: 65000, abundante: 85000 };
+    var PLAN_NOMBRE = { minimo:'Mínimo', estandar:'Estándar', abundante:'Abundante', becado:'Beca' };
 
-    var allRows = [];
+    function becaAporte(r){ var m = /^BECA-(\d+)-/.exec(r.mp_payment_id||''); return m ? parseInt(m[1],10) : 0; }
+
+    var tallerRows = [];
+    var cursoRows = [];
 
     function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
     function show(id){ ['login','loading','panel'].forEach(function(s){ $(s).style.display = (s===id)?'':'none'; }); }
@@ -132,59 +142,123 @@
     }
     function fmtMoney(n){ return '$' + (n||0).toLocaleString('es-AR'); }
 
-    function renderStats(rows){
-      var total = rows.length;
-      var paid = rows.filter(function(r){ return r.status === 'paid'; });
-      var pending = rows.filter(function(r){ return r.status === 'pending'; }).length;
-      var recaudado = paid.reduce(function(acc, r){ return acc + (r.aporte || 0); }, 0);
-      var stats = [
-        ['Total inscriptos', total],
-        ['Pagados', paid.length],
-        ['Pendientes', pending],
-        ['Recaudado', fmtMoney(recaudado)]
-      ];
-      $('stats').innerHTML = stats.map(function(s){
-        return '<div class="ad-stat"><div class="k">'+s[0]+'</div><div class="v">'+esc(s[1])+'</div></div>';
-      }).join('');
-    }
-
-    function renderRows(rows){
-      if (!rows.length){ $('rows').innerHTML = '<tr><td colspan="8" class="ad-state">Sin inscriptos.</td></tr>'; return; }
-      $('rows').innerHTML = rows.map(function(r){
-        var st = r.status || 'pending';
-        var pillClass = st;
-        var label = st === 'paid' ? 'Pagado' : st === 'cancelled' ? 'Cancelado' : 'Pendiente';
-        return '<tr>'
-          + '<td class="wrap">'+esc(r.full_name || '—')+'</td>'
-          + '<td>'+esc(r.email)+'</td>'
-          + '<td>'+esc(r.phone || '—')+'</td>'
-          + '<td>'+fmtMoney(r.aporte)+'</td>'
-          + '<td><span class="pill '+esc(pillClass)+'">'+label+'</span></td>'
-          + '<td>'+fmtDate(r.created_at)+'</td>'
-          + '<td>'+fmtDate(r.paid_at)+'</td>'
-          + '<td>'+esc(r.mp_payment_id || '—')+'</td>'
-          + '</tr>';
-      }).join('');
-    }
-
-    function applyFilter(){
+    function getFilteredRows(rows){
       var q = ($('search').value || '').toLowerCase().trim();
-      var rows = !q ? allRows : allRows.filter(function(r){
+      if (!q) return rows;
+      return rows.filter(function(r){
         return (r.full_name||'').toLowerCase().indexOf(q) >= 0 ||
                (r.email||'').toLowerCase().indexOf(q) >= 0 ||
-               (r.phone||'').toLowerCase().indexOf(q) >= 0;
+               (r.phone||'').toLowerCase().indexOf(q) >= 0 ||
+               (r.plan||'').toLowerCase().indexOf(q) >= 0;
       });
-      renderStats(rows);
-      renderRows(rows);
+    }
+
+    function render(){
+      var isTaller = $('workshop-select').value === 'taller-ia-la-post-humanidad';
+      var rows = getFilteredRows(isTaller ? tallerRows : cursoRows);
+
+      if (isTaller) {
+        // Stats Taller
+        var total = rows.length;
+        var paid = rows.filter(function(r){ return r.status === 'paid'; });
+        var pending = rows.filter(function(r){ return r.status === 'pending'; }).length;
+        var recaudado = paid.reduce(function(acc, r){ return acc + (r.aporte || 0); }, 0);
+        var stats = [
+          ['Total inscriptos', total],
+          ['Pagados', paid.length],
+          ['Pendientes', pending],
+          ['Recaudado', fmtMoney(recaudado)]
+        ];
+        $('stats').innerHTML = stats.map(function(s){
+          return '<div class="ad-stat"><div class="k">'+s[0]+'</div><div class="v">'+esc(s[1])+'</div></div>';
+        }).join('');
+
+        // Header Taller
+        $('thead').innerHTML = '<tr>'
+          + '<th>Nombre</th><th>Email</th><th>Teléfono</th><th>Aporte</th><th>Estado</th>'
+          + '<th>Inscripto</th><th>Pagado</th><th>ID de pago (MP)</th>'
+          + '</tr>';
+
+        // Rows Taller
+        if (!rows.length){ $('rows').innerHTML = '<tr><td colspan="8" class="ad-state">Sin inscriptos.</td></tr>'; return; }
+        $('rows').innerHTML = rows.map(function(r){
+          var st = r.status || 'pending';
+          var pillClass = st;
+          var label = st === 'paid' ? 'Pagado' : st === 'cancelled' ? 'Cancelado' : 'Pendiente';
+          return '<tr>'
+            + '<td class="wrap">'+esc(r.full_name || '—')+'</td>'
+            + '<td>'+esc(r.email)+'</td>'
+            + '<td>'+esc(r.phone || '—')+'</td>'
+            + '<td>'+fmtMoney(r.aporte)+'</td>'
+            + '<td><span class="pill '+esc(pillClass)+'">'+label+'</span></td>'
+            + '<td>'+fmtDate(r.created_at)+'</td>'
+            + '<td>'+fmtDate(r.paid_at)+'</td>'
+            + '<td>'+esc(r.mp_payment_id || '—')+'</td>'
+            + '</tr>';
+        }).join('');
+      } else {
+        // Stats Curso
+        var totalC = rows.length;
+        var paidC = rows.filter(function(r){ return r.status === 'paid'; });
+        var becados = rows.filter(function(r){ return r.status === 'paid' && r.plan === 'becado'; }).length;
+        var pagados = paidC.length - becados;
+        var pendingC = rows.filter(function(r){ return r.status === 'pending'; }).length;
+        var recaudadoC = paidC.reduce(function(acc, r){ return acc + (PLAN_PRICE[r.plan] || becaAporte(r) || 0); }, 0);
+        var statsC = [
+          ['Total inscriptos', totalC],
+          ['Pagados', pagados],
+          ['Becados', becados],
+          ['Pendientes', pendingC],
+          ['Recaudado', fmtMoney(recaudadoC)]
+        ];
+        $('stats').innerHTML = statsC.map(function(s){
+          return '<div class="ad-stat"><div class="k">'+s[0]+'</div><div class="v">'+esc(s[1])+'</div></div>';
+        }).join('');
+
+        // Header Curso
+        $('thead').innerHTML = '<tr>'
+          + '<th>Nombre</th><th>Email</th><th>Plan</th><th>Estado</th>'
+          + '<th>Inscripto</th><th>Pagado</th><th>ID de pago (MP)</th>'
+          + '</tr>';
+
+        // Rows Curso
+        if (!rows.length){ $('rows').innerHTML = '<tr><td colspan="7" class="ad-state">Sin inscriptos.</td></tr>'; return; }
+        $('rows').innerHTML = rows.map(function(r){
+          var st = r.status || 'pending';
+          var beca = r.plan === 'becado';
+          var pillClass = beca && st === 'paid' ? 'beca' : st;
+          var label = beca && st === 'paid' ? 'Becado'
+            : st === 'paid' ? 'Pagado' : st === 'cancelled' ? 'Cancelado' : 'Pendiente';
+          return '<tr>'
+            + '<td class="wrap">'+esc(r.full_name || '—')+'</td>'
+            + '<td>'+esc(r.email)+'</td>'
+            + '<td>'+esc(PLAN_NOMBRE[r.plan] || r.plan || '—')+'</td>'
+            + '<td><span class="pill '+esc(pillClass)+'">'+label+'</span></td>'
+            + '<td>'+fmtDate(r.created_at)+'</td>'
+            + '<td>'+fmtDate(r.paid_at)+'</td>'
+            + '<td>'+esc(r.mp_payment_id || '—')+'</td>'
+            + '</tr>';
+        }).join('');
+      }
     }
 
     function downloadCSV(){
-      var head = ['Nombre','Email','Teléfono','Aporte','Estado','Inscripto','Pagado','ID pago MP'];
+      var isTaller = $('workshop-select').value === 'taller-ia-la-post-humanidad';
+      var rows = isTaller ? tallerRows : cursoRows;
+      var head = isTaller
+        ? ['Nombre','Email','Teléfono','Aporte','Estado','Inscripto','Pagado','ID pago MP']
+        : ['Nombre','Email','Plan','Estado','Inscripto','Pagado','ID pago MP'];
       var lines = [head];
 
-      allRows.forEach(function(r){
-        lines.push([ r.full_name||'', r.email||'', r.phone||'', r.aporte||0, r.status||'',
-          fmtDate(r.created_at), fmtDate(r.paid_at), r.mp_payment_id||'' ]);
+      rows.forEach(function(r){
+        if (isTaller) {
+          lines.push([ r.full_name||'', r.email||'', r.phone||'', r.aporte||0, r.status||'',
+            fmtDate(r.created_at), fmtDate(r.paid_at), r.mp_payment_id||'' ]);
+        } else {
+          var estado = (r.plan==='becado' && r.status==='paid') ? 'becado' : (r.status||'');
+          lines.push([ r.full_name||'', r.email||'', PLAN_NOMBRE[r.plan]||r.plan||'', estado,
+            fmtDate(r.created_at), fmtDate(r.paid_at), r.mp_payment_id||'' ]);
+        }
       });
       var csv = lines.map(function(row){
         return row.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
@@ -192,30 +266,31 @@
       var blob = new Blob(['\ufeff'+csv], { type:'text/csv;charset=utf-8;' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'taller-post-humanidad-' + new Date().toISOString().slice(0,10) + '.csv';
+      a.download = (isTaller ? 'taller-post-humanidad-' : 'curso-energia-dinero-') + new Date().toISOString().slice(0,10) + '.csv';
       a.click();
       URL.revokeObjectURL(a.href);
     }
 
     function load(key){
       show('loading');
-      fetch('/api/admin/taller-signups', { headers: { 'x-admin-key': key } })
-        .then(function(res){
-          if (res.status === 401){ localStorage.removeItem(KEY_STORE); $('login-err').textContent = 'Clave incorrecta.'; show('login'); return null; }
-          if (res.status === 503){ $('login-err').textContent = 'El panel no está configurado en el servidor.'; show('login'); return null; }
-          if (!res.ok){ $('login-err').textContent = 'Error del servidor ('+res.status+').'; show('login'); return null; }
-          return res.json();
-        })
-        .then(function(data){
-          if (!data) return;
-          localStorage.setItem(KEY_STORE, key);
-          allRows = data.signups || [];
-          renderStats(allRows);
-          renderRows(allRows);
-          $('updated').textContent = 'Actualizado ' + fmtDate(new Date().toISOString());
-          show('panel');
-        })
-        .catch(function(){ $('login-err').textContent = 'No se pudo conectar.'; show('login'); });
+      Promise.all([
+        fetch('/api/admin/taller-signups', { headers: { 'x-admin-key': key } }),
+        fetch('/api/admin/enrollments', { headers: { 'x-admin-key': key } })
+      ]).then(function(responses){
+        var r1 = responses[0], r2 = responses[1];
+        if (r1.status === 401 || r2.status === 401){ localStorage.removeItem(KEY_STORE); $('login-err').textContent = 'Clave incorrecta.'; show('login'); return null; }
+        if (r1.status === 503 || r2.status === 503){ $('login-err').textContent = 'El panel no está configurado en el servidor.'; show('login'); return null; }
+        if (!r1.ok || !r2.ok){ $('login-err').textContent = 'Error del servidor.'; show('login'); return null; }
+        return Promise.all([r1.json(), r2.json()]);
+      }).then(function(dataArr){
+        if (!dataArr) return;
+        localStorage.setItem(KEY_STORE, key);
+        tallerRows = (dataArr[0] && dataArr[0].signups) || [];
+        cursoRows = (dataArr[1] && dataArr[1].enrollments) || [];
+        render();
+        $('updated').textContent = 'Actualizado ' + fmtDate(new Date().toISOString());
+        show('panel');
+      }).catch(function(){ $('login-err').textContent = 'No se pudo conectar.'; show('login'); });
     }
 
     $('login-btn').onclick = function(){
@@ -226,7 +301,8 @@
     $('pass').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('login-btn').click(); });
     $('refresh').onclick = function(){ load(localStorage.getItem(KEY_STORE)); };
     $('logout').onclick = function(){ localStorage.removeItem(KEY_STORE); $('pass').value=''; $('login-err').textContent=''; show('login'); };
-    $('search').addEventListener('input', applyFilter);
+    $('search').addEventListener('input', render);
+    $('workshop-select').addEventListener('change', render);
     $('csv').onclick = downloadCSV;
 
     var saved = localStorage.getItem(KEY_STORE);
@@ -234,5 +310,6 @@
   })();
   </script>
 </body></html>
+
 
 
