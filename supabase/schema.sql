@@ -54,12 +54,17 @@ create table if not exists public.taller_signups (
   workshop    text not null default 'taller-ia-la-post-humanidad',
   full_name   text not null,
   email       text not null,
+  phone       text not null,
   aporte      integer not null check (aporte >= 1000),
   status      text not null default 'pending' check (status in ('pending','paid','cancelled')),
   mp_payment_id text,
   created_at  timestamptz not null default now(),
   paid_at     timestamptz
 );
+
+-- Por si la tabla ya existía de una corrida previa de este script sin la
+-- columna phone (idempotente: no rompe si ya está o si la tabla es nueva).
+alter table public.taller_signups add column if not exists phone text;
 
 create index if not exists taller_signups_email_idx on public.taller_signups (email);
 create index if not exists taller_signups_workshop_idx on public.taller_signups (workshop);

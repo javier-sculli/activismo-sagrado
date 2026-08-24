@@ -304,20 +304,22 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
   if (!supabase) return res.status(500).json({ error: 'sin supabase' });
   if (!MP_ACCESS_TOKEN) return res.status(500).json({ error: 'MP no configurado' });
 
-  const { name, email, aporte } = req.body || {};
+  const { name, email, phone, aporte } = req.body || {};
   const cleanName = (name || '').toString().trim();
   const cleanEmail = (email || '').toString().trim().toLowerCase();
+  const cleanPhone = (phone || '').toString().trim();
   const monto = Math.round(Number(aporte));
 
   if (!cleanName) return res.status(400).json({ error: 'Falta el nombre.' });
   if (!cleanEmail || !/^\S+@\S+\.\S+$/.test(cleanEmail)) return res.status(400).json({ error: 'Email inválido.' });
+  if (!cleanPhone || cleanPhone.replace(/\D/g, '').length < 6) return res.status(400).json({ error: 'Celular inválido.' });
   if (!Number.isFinite(monto) || monto < TALLER_MIN_APORTE || monto > TALLER_MAX_APORTE) {
     return res.status(400).json({ error: `El aporte debe ser un número entre $${TALLER_MIN_APORTE} y $${TALLER_MAX_APORTE}.` });
   }
 
   const { data: inserted, error: insErr } = await supabase
     .from('taller_signups')
-    .insert({ workshop: TALLER_SLUG, full_name: cleanName, email: cleanEmail, aporte: monto, status: 'pending' })
+    .insert({ workshop: TALLER_SLUG, full_name: cleanName, email: cleanEmail, phone: cleanPhone, aporte: monto, status: 'pending' })
     .select()
     .single();
   if (insErr) return res.status(500).json({ error: insErr.message });
@@ -388,7 +390,7 @@ app.get('/api/admin/taller-signups', async (req, res) => {
 
   const { data, error } = await supabase
     .from('taller_signups')
-    .select('id,full_name,email,aporte,status,mp_payment_id,created_at,paid_at')
+    .select('id,full_name,email,phone,aporte,status,mp_payment_id,created_at,paid_at')
     .eq('workshop', TALLER_SLUG)
     .order('created_at', { ascending: false });
   if (error) return res.status(500).json({ error: error.message });
