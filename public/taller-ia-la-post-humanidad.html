@@ -249,9 +249,73 @@
         <span class="sb-time">10 a 12 hs (ARG)</span>
       </div>
       <div class="hero-actions">
-        <a href="#reservar" class="btn btn-primary">Reservar mi lugar <span class="arrow">→</span></a>
+        <a href="#reservar" class="btn btn-primary" id="hero-cta">Reservar mi lugar <span class="arrow">→</span></a>
         <a href="#modulos" class="btn btn-ghost">Ver de qué se trata</a>
       </div>
+    </div>
+  </section>
+
+  <!-- ========= RESERVÁ TU LUGAR (economía del regalo) ========= -->
+  <section id="reservar" class="reservar" style="padding: 50px 0 80px;">
+    <div class="shell">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">Inscripción</div>
+        <h2>Reservá tu lugar</h2>
+        <div class="sub">vos elegís cuánto aportar</div>
+      </div>
+
+      <div class="gift-card">
+
+        <!-- FORMULARIO -->
+        <div id="reservar-form-wrap">
+          <p class="gift-note">
+            Este taller funciona a la gorra: no hay un precio fijo, elegís tu aporte según
+            tu momento. El mínimo simbólico es de <strong>$1.000</strong>, para sostener
+            este espacio. Después de reservar, te llega el link del grupo de WhatsApp del
+            taller.
+          </p>
+          <form id="taller-form">
+            <div class="field">
+              <label for="t-name">Nombre y apellido</label>
+              <input type="text" id="t-name" autocomplete="name" placeholder="Tu nombre" required>
+            </div>
+            <div class="field">
+              <label for="t-email">Email</label>
+              <input type="email" id="t-email" autocomplete="email" placeholder="tu@email.com" required>
+            </div>
+            <div class="field">
+              <label for="t-phone">Celular (WhatsApp)</label>
+              <input type="tel" id="t-phone" autocomplete="tel" placeholder="Ej: 11 2345 6789" required>
+            </div>
+            <div class="field">
+              <label for="t-aporte">Tu aporte (economía del regalo)</label>
+              <input type="number" id="t-aporte" min="1000" step="500" value="10000" required>
+              <div class="hint">$10.000 es el precio sugerido. Mínimo $1.000: elegís vos cuánto, según lo que puedas hoy.</div>
+            </div>
+            <button class="submit" id="reservar-submit" type="submit">Reservar mi lugar</button>
+          </form>
+          <div class="msg" id="taller-msg"></div>
+        </div>
+
+        <!-- VERIFICANDO PAGO -->
+        <div id="reservar-checking" style="display:none;">
+          <p><strong>Un momento…</strong><br>Estamos confirmando tu aporte con Mercado Pago. No cierres esta pantalla.</p>
+        </div>
+
+        <!-- CONFIRMADO -->
+        <div id="reservar-ok" style="display:none;">
+          <p style="font-family:var(--font-script); font-size:26px; color:#FFE583; margin:0 0 8px;">¡Reserva confirmada! 🎉</p>
+          <p style="margin:0 0 24px;">Tu lugar en <b>La Post Humanidad</b> está reservado para el sábado 29 de agosto, de 10 a 12 hs (ARG).</p>
+          <a class="pay-btn" id="wa-link" href="#" target="_blank" rel="noopener" style="display:none;">Sumarme al grupo de WhatsApp</a>
+          <p id="wa-pending-note" style="display:none; font-size:14px; opacity:.8; margin-top:6px;">Muy pronto vas a recibir el link del grupo de WhatsApp del taller.</p>
+        </div>
+
+      </div>
+
+      <p class="pay-note">
+        El aporte se procesa de forma segura en Mercado Pago.
+        ¿Dudas? <a href="https://chat.whatsapp.com/CZdbRKFK3M5J4nZg0qde25?mode=gi_t" target="_blank" rel="noopener">Escribinos</a>.
+      </p>
     </div>
   </section>
 
@@ -354,70 +418,6 @@
     </div>
   </section>
 
-  <!-- ========= RESERVÁ TU LUGAR (economía del regalo) ========= -->
-  <section id="reservar" class="reservar">
-    <div class="shell">
-      <div class="head">
-        <div class="section-label deep" style="margin-bottom:14px;">Inscripción</div>
-        <h2>Reservá tu lugar</h2>
-        <div class="sub">vos elegís cuánto aportar</div>
-      </div>
-
-      <div class="gift-card">
-
-        <!-- FORMULARIO -->
-        <div id="reservar-form-wrap">
-          <p class="gift-note">
-            Este taller funciona a la gorra: no hay un precio fijo, elegís tu aporte según
-            tu momento. El mínimo simbólico es de <strong>$1.000</strong>, para sostener
-            este espacio. Después de reservar, te llega el link del grupo de WhatsApp del
-            taller.
-          </p>
-          <form id="taller-form">
-            <div class="field">
-              <label for="t-name">Nombre y apellido</label>
-              <input type="text" id="t-name" autocomplete="name" placeholder="Tu nombre" required>
-            </div>
-            <div class="field">
-              <label for="t-email">Email</label>
-              <input type="email" id="t-email" autocomplete="email" placeholder="tu@email.com" required>
-            </div>
-            <div class="field">
-              <label for="t-phone">Celular (WhatsApp)</label>
-              <input type="tel" id="t-phone" autocomplete="tel" placeholder="Ej: 11 2345 6789" required>
-            </div>
-            <div class="field">
-              <label for="t-aporte">Tu aporte (economía del regalo)</label>
-              <input type="number" id="t-aporte" min="1000" step="500" value="10000" required>
-              <div class="hint">$10.000 es el precio sugerido. Mínimo $1.000: elegís vos cuánto, según lo que puedas hoy.</div>
-            </div>
-            <button class="submit" id="reservar-submit" type="submit">Reservar mi lugar</button>
-          </form>
-          <div class="msg" id="taller-msg"></div>
-        </div>
-
-        <!-- VERIFICANDO PAGO -->
-        <div id="reservar-checking" style="display:none;">
-          <p><strong>Un momento…</strong><br>Estamos confirmando tu aporte con Mercado Pago. No cierres esta pantalla.</p>
-        </div>
-
-        <!-- CONFIRMADO -->
-        <div id="reservar-ok" style="display:none;">
-          <p style="font-family:var(--font-script); font-size:26px; color:#FFE583; margin:0 0 8px;">¡Reserva confirmada! 🎉</p>
-          <p style="margin:0 0 24px;">Tu lugar en <b>La Post Humanidad</b> está reservado para el sábado 29 de agosto, de 10 a 12 hs (ARG).</p>
-          <a class="pay-btn" id="wa-link" href="#" target="_blank" rel="noopener" style="display:none;">Sumarme al grupo de WhatsApp</a>
-          <p id="wa-pending-note" style="display:none; font-size:14px; opacity:.8; margin-top:6px;">Muy pronto vas a recibir el link del grupo de WhatsApp del taller.</p>
-        </div>
-
-      </div>
-
-      <p class="pay-note">
-        El aporte se procesa de forma segura en Mercado Pago.
-        ¿Dudas? <a href="https://chat.whatsapp.com/CZdbRKFK3M5J4nZg0qde25?mode=gi_t" target="_blank" rel="noopener">Escribinos</a>.
-      </p>
-    </div>
-  </section>
-
   <!-- ========= FOOTER ========= -->
   <footer>
     <div class="shell">
@@ -430,9 +430,7 @@
 
   <script>
   (function(){
-    // TODO: reemplazar por el link real del grupo de WhatsApp de este taller
-    // apenas lo tengas. Hasta entonces, en vez del botón se muestra un aviso.
-    var WA_LINK = 'PONER_AQUI_EL_LINK_DE_WHATSAPP';
+    var WA_LINK = 'https://chat.whatsapp.com/IOOi955AgHFHpkh6xQJ86b?s=sh&p=i&mlu=4';
 
     var $ = function(id){ return document.getElementById(id); };
     var form = $('taller-form');
@@ -444,10 +442,32 @@
       if (waConfigured){
         var a = $('wa-link');
         a.href = WA_LINK;
-        a.style.display = '';
+        a.style.display = 'inline-flex';
       } else {
         $('wa-pending-note').style.display = '';
       }
+    }
+
+    function setupRegisteredState(){
+      var ctaBtns = document.querySelectorAll('a[href="#reservar"]');
+      ctaBtns.forEach(function(btn){
+        btn.href = '/mis-cursos';
+        btn.onclick = function(e){
+          e.preventDefault();
+          window.location.href = '/mis-cursos';
+        };
+      });
+      if ($('reservar-form-wrap')) $('reservar-form-wrap').style.display = 'none';
+      if ($('reservar-checking')) $('reservar-checking').style.display = 'none';
+      if ($('reservar-ok')) {
+        $('reservar-ok').style.display = 'block';
+        revealWa();
+      }
+    }
+
+    var isRegistered = localStorage.getItem('as_taller_post_humanidad_registered') === 'true' || localStorage.getItem('as_taller_paid') === 'true';
+    if (isRegistered) {
+      setupRegisteredState();
     }
 
     var params = new URLSearchParams(location.search);
@@ -461,8 +481,9 @@
         .then(function(res){
           $('reservar-checking').style.display = 'none';
           if (res && res.paid) {
-            $('reservar-ok').style.display = 'block';
-            revealWa();
+            localStorage.setItem('as_taller_post_humanidad_registered', 'true');
+            localStorage.setItem('as_taller_paid', 'true');
+            setupRegisteredState();
             if (window.asTrack) asTrack('purchase', { items: ['taller-ia-la-post-humanidad'] });
           } else {
             $('reservar-form-wrap').style.display = '';
@@ -511,5 +532,4 @@
     if (window.asTrack) asTrack('view_course_landing', { course: 'taller-ia-la-post-humanidad' });
   })();
   </script>
-
 </body></html>

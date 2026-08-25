@@ -133,6 +133,25 @@
         }).join('') + '</div>';
       }
 
+      function getTallerCardHtml(){
+        var WA_LINK = 'https://chat.whatsapp.com/IOOi955AgHFHpkh6xQJ86b?s=sh&p=i&mlu=4';
+        return '<div class="mc-card">'
+          + '<span class="mc-badge paid">Inscripción confirmada</span>'
+          + '<h2>Taller: La Post Humanidad</h2>'
+          + '<p class="lead">Ya tenés tu lugar reservado. Entrá al grupo de WhatsApp para recibir los enlaces y novedades del encuentro.</p>'
+          + '<div class="mc-facts">'
+          + '<div class="mc-fact"><div class="k">Comienza</div><div class="v">Sábado 29 de agosto</div></div>'
+          + '<div class="mc-fact"><div class="k">Horario</div><div class="v">10 a 12 hs (ARG)</div></div>'
+          + '<div class="mc-fact"><div class="k">Modalidad</div><div class="v">Virtual, en vivo</div></div>'
+          + '</div>'
+          + '<div class="mc-note"><span class="ic">💬</span><div><strong>La comunicación del taller es por el grupo de WhatsApp.</strong> Sumate para recibir las novedades del encuentro.</div></div>'
+          + '<div class="mc-actions">'
+          + '<a class="mc-btn" href="'+WA_LINK+'" target="_blank" rel="noopener">Sumarme al grupo de WhatsApp</a>'
+          + '<a class="mc-btn ghost" href="/taller-ia-la-post-humanidad">Ver el taller</a>'
+          + '</div>'
+          + '</div>';
+      }
+
       function card(r){
         var paid = r.status === 'paid';
         var badge = paid
@@ -165,32 +184,50 @@
           + '</div>';
       }
 
-      function render(rows, user){
-        var nombre = (user.user_metadata && user.user_metadata.full_name) || '';
+      function render(rows, user, isTallerRegistered){
+        var nombre = user && user.user_metadata && user.user_metadata.full_name;
         var primer = nombre ? nombre.split(' ')[0] : '';
         $('greeting').textContent = primer ? ('Hola, ' + primer) : 'Mis cursos';
-        $('who').textContent = user.email;
+        $('who').textContent = user ? user.email : 'Tus inscripciones';
         var cont = $('courses');
-        if (!rows || !rows.length){
+
+        var html = (rows && rows.length) ? rows.map(card).join('') : '';
+        if (isTallerRegistered) {
+          html = getTallerCardHtml() + html;
+        }
+
+        if (!html){
           cont.innerHTML = '<div class="mc-empty"><p>Todavía no estás inscripto a ningún curso.</p>'
-            + '<a class="mc-btn" href="/la-energia-del-dinero">Ver el taller</a></div>';
+            + '<a class="mc-btn" href="/taller-ia-la-post-humanidad">Ver el taller</a></div>';
           return;
         }
-        cont.innerHTML = rows.map(card).join('');
+        cont.innerHTML = html;
       }
+
+      var isTallerRegistered = localStorage.getItem('as_taller_post_humanidad_registered') === 'true' || localStorage.getItem('as_taller_paid') === 'true';
 
       client.auth.getSession().then(function(res){
         var session = res.data && res.data.session;
-        if (!session || !session.user){ show('state-anon'); return; }
-        var user = session.user;
-        client.from('enrollments')
-          .select('plan,status,created_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .then(function(r){
-            render(r.data || [], user);
-            show('state-ready');
-          });
+        var user = session && session.user;
+
+        if (!user && !isTallerRegistered) {
+          show('state-anon');
+          return;
+        }
+
+        if (user) {
+          client.from('enrollments')
+            .select('plan,status,created_at')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .then(function(r){
+              render(r.data || [], user, isTallerRegistered);
+              show('state-ready');
+            });
+        } else {
+          render([], null, isTallerRegistered);
+          show('state-ready');
+        }
       });
     })();
   </script>
