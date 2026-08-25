@@ -428,6 +428,8 @@
     </div>
   </footer>
 
+  <script src="/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   (function(){
     var WA_LINK = 'https://chat.whatsapp.com/IOOi955AgHFHpkh6xQJ86b?s=sh&p=i&mlu=4';
@@ -449,14 +451,36 @@
     }
 
     function setupRegisteredState(){
+      var navCta = document.querySelector('.nav-cta');
+      if (navCta) {
+        navCta.href = '/mis-cursos';
+        navCta.textContent = 'Mis cursos';
+        navCta.onclick = function(e){
+          e.preventDefault();
+          window.location.href = '/mis-cursos';
+        };
+      }
+
+      var heroCta = $('hero-cta');
+      if (heroCta) {
+        heroCta.href = '/mis-cursos';
+        heroCta.innerHTML = 'Ir a Mis cursos <span class="arrow">→</span>';
+        heroCta.onclick = function(e){
+          e.preventDefault();
+          window.location.href = '/mis-cursos';
+        };
+      }
+
       var ctaBtns = document.querySelectorAll('a[href="#reservar"]');
       ctaBtns.forEach(function(btn){
         btn.href = '/mis-cursos';
+        btn.textContent = 'Mis cursos';
         btn.onclick = function(e){
           e.preventDefault();
           window.location.href = '/mis-cursos';
         };
       });
+
       if ($('reservar-form-wrap')) $('reservar-form-wrap').style.display = 'none';
       if ($('reservar-checking')) $('reservar-checking').style.display = 'none';
       if ($('reservar-ok')) {
@@ -468,6 +492,19 @@
     var isRegistered = localStorage.getItem('as_taller_post_humanidad_registered') === 'true' || localStorage.getItem('as_taller_paid') === 'true';
     if (isRegistered) {
       setupRegisteredState();
+    }
+
+    var cfg = window.SUPABASE_CONFIG;
+    if (cfg && window.supabase) {
+      try {
+        var client = window.supabase.createClient(cfg.url, cfg.anonKey);
+        client.auth.getSession().then(function(res){
+          var session = res.data && res.data.session;
+          if (session && session.user) {
+            setupRegisteredState();
+          }
+        });
+      } catch(e){}
     }
 
     var params = new URLSearchParams(location.search);
