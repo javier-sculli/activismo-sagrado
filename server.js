@@ -36,8 +36,13 @@ const supabase = (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY)
 // Precio por plan (en pesos). El monto real lo decide el server, nunca el cliente.
 const PLAN_PRICES = { minimo: 45000, estandar: 65000, abundante: 85000 };
 
-// Taller "La Post Humanidad": economía del regalo, sin cuenta, monto libre.
-const TALLER_SLUG = 'taller-ia-la-post-humanidad';
+// Talleres de economía del regalo: sin cuenta, monto libre.
+// El slug es también la URL de la landing (/<slug>) y el valor de taller_signups.workshop.
+const TALLERES = {
+  'taller-ia-la-post-humanidad': { titulo: 'La Post Humanidad' },
+  'el-perfume-que-lleva-el-dolor': { titulo: 'El perfume que lleva el dolor' },
+};
+const TALLER_SLUG_DEFAULT = 'taller-ia-la-post-humanidad';
 const TALLER_MIN_APORTE = 1000;
 const TALLER_MAX_APORTE = 2000000; // tope de sanidad ante errores de tipeo, no un límite de negocio
 
@@ -95,7 +100,7 @@ async function marcarPagado({ userId, email, paymentId, amount, plan }) {
   return { ok: true, action: 'inserted' };
 }
 
-// Marca una inscripción del taller "La Post Humanidad" como pagada.
+// Marca una inscripción de un taller (taller_signups) como pagada.
 // A diferencia de marcarPagado() (que matchea por user_id/email), acá matcheamos
 // por el id de la fila en taller_signups, que viaja en el metadata/external_reference
 // de la preferencia creada en /api/taller-signup. Es el identificador más confiable
@@ -168,7 +173,7 @@ app.post('/api/mp-webhook', express.json({ type: '*/*' }), async (req, res) => {
     if (pay.status !== 'approved') { console.log('[webhook] pago no aprobado:', pay.status); return; }
 
     const md = pay.metadata || {};
-    if (md.workshop === TALLER_SLUG) {
+    if (TALLERES[md.workshop]) {
       const result = await marcarPagadoTaller({ signupId: md.signup_id || pay.external_reference, paymentId });
       console.log('[webhook] pago taller', paymentId, JSON.stringify(md), '->', JSON.stringify(result));
       return;
@@ -294,7 +299,7 @@ app.post('/api/beca-enroll', express.json(), async (req, res) => {
   res.json(result);
 });
 
-// --- Inscripción al taller "La Post Humanidad" (economía del regalo) ---
+// --- Inscripción a un taller de economía del regalo (ver TALLERES) ---
 //   Sin cuenta: solo nombre + email. Quien se inscribe elige su propio aporte
 //   (piso de $1.000). Guardamos la fila como 'pending' y armamos la preferencia
 //   de Mercado Pago con ESE monto (el server la crea, pero el número lo eligió
@@ -304,7 +309,10 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
   if (!supabase) return res.status(500).json({ error: 'sin supabase' });
   if (!MP_ACCESS_TOKEN) return res.status(500).json({ error: 'MP no configurado' });
 
-  const { name, email, phone, aporte } = req.body || {};
+  const { name, email, phone, aporte, workshop } = req.body || {};
+  const slug = workshop || TALLER_SLUG_DEFAULT;
+  const taller = TALLERES[slug];
+  if (!taller) return res.status(400).json({ error: 'Taller inválido.' });
   const cleanName = (name || '').toString().trim();
   const cleanEmail = (email || '').toString().trim().toLowerCase();
   const cleanPhone = (phone || '').toString().trim();
@@ -319,23 +327,23 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
 
   const { data: inserted, error: insErr } = await supabase
     .from('taller_signups')
-    .insert({ workshop: TALLER_SLUG, full_name: cleanName, email: cleanEmail, phone: cleanPhone, aporte: monto, status: 'pending' })
+    .insert({ workshop: slug, full_name: cleanName, email: cleanEmail, phone: cleanPhone, aporte: monto, status: 'pending' })
     .select()
     .single();
   if (insErr) return res.status(500).json({ error: insErr.message });
 
   const origin = (req.get('origin') || `https://${req.get('host')}`).replace(/\/$/, '');
-  const back = `${origin}/${TALLER_SLUG}?signup_id=${inserted.id}`;
+  const back = `${origin}/${slug}?signup_id=${inserted.id}`;
 
   const pref = {
     items: [{
-      title: 'Taller: La Post Humanidad (aporte libre)',
+      title: `Taller: ${taller.titulo} (aporte libre)`,
       quantity: 1,
       currency_id: 'ARS',
       unit_price: monto,
     }],
     external_reference: inserted.id,
-    metadata: { workshop: TALLER_SLUG, signup_id: inserted.id, email: cleanEmail },
+    metadata: { workshop: slug, signup_id: inserted.id, email: cleanEmail },
     payer: { email: cleanEmail },
     back_urls: { success: back, pending: back, failure: back },
     auto_return: 'approved',
@@ -373,7 +381,7 @@ app.get('/api/taller-verify-payment', async (req, res) => {
     const pay = await r.json();
     if (pay.status !== 'approved') return res.json({ paid: false, status: pay.status });
     const md = pay.metadata || {};
-    if (md.workshop !== TALLER_SLUG) return res.json({ paid: false, reason: 'no corresponde a este taller' });
+    if (!TALLERES[md.workshop]) return res.json({ paid: false, reason: 'no corresponde a un taller' });
     const result = await marcarPagadoTaller({ signupId: md.signup_id || pay.external_reference, paymentId: id });
     return res.json({ paid: true, ...result });
   } catch (e) {
@@ -381,7 +389,7 @@ app.get('/api/taller-verify-payment', async (req, res) => {
   }
 });
 
-// --- Panel admin: lista de inscriptos al taller "La Post Humanidad" ---
+// --- Panel admin: lista de inscriptos a los talleres (el panel filtra por workshop) ---
 app.get('/api/admin/taller-signups', async (req, res) => {
   if (!ADMIN_PASSWORD) return res.status(503).json({ error: 'panel no configurado' });
   const key = req.get('x-admin-key') || req.query.key;
@@ -390,8 +398,7 @@ app.get('/api/admin/taller-signups', async (req, res) => {
 
   const { data, error } = await supabase
     .from('taller_signups')
-    .select('id,full_name,email,phone,aporte,status,mp_payment_id,created_at,paid_at')
-    .eq('workshop', TALLER_SLUG)
+    .select('id,workshop,full_name,email,phone,aporte,status,mp_payment_id,created_at,paid_at')
     .order('created_at', { ascending: false });
   if (error) return res.status(500).json({ error: error.message });
   res.json({ signups: data || [] });

@@ -92,6 +92,7 @@
         </div>
         <div class="ad-toolbar">
           <select class="ad-select" id="workshop-select">
+            <option value="el-perfume-que-lleva-el-dolor">Taller: El perfume que lleva el dolor</option>
             <option value="taller-ia-la-post-humanidad">Taller: La Post Humanidad</option>
             <option value="la-energia-del-dinero">Curso: La Energía del Dinero</option>
           </select>
@@ -131,6 +132,11 @@
     var tallerRows = [];
     var cursoRows = [];
 
+    // Filas viejas sin workshop pertenecen al primer taller.
+    function tallerRowsFor(ws){
+      return tallerRows.filter(function(r){ return (r.workshop || 'taller-ia-la-post-humanidad') === ws; });
+    }
+
     function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
     function show(id){ ['login','loading','panel'].forEach(function(s){ $(s).style.display = (s===id)?'':'none'; }); }
 
@@ -154,8 +160,9 @@
     }
 
     function render(){
-      var isTaller = $('workshop-select').value === 'taller-ia-la-post-humanidad';
-      var rows = getFilteredRows(isTaller ? tallerRows : cursoRows);
+      var ws = $('workshop-select').value;
+      var isTaller = ws !== 'la-energia-del-dinero';
+      var rows = getFilteredRows(isTaller ? tallerRowsFor(ws) : cursoRows);
 
       if (isTaller) {
         // Stats Taller
@@ -243,8 +250,9 @@
     }
 
     function downloadCSV(){
-      var isTaller = $('workshop-select').value === 'taller-ia-la-post-humanidad';
-      var rows = isTaller ? tallerRows : cursoRows;
+      var ws = $('workshop-select').value;
+      var isTaller = ws !== 'la-energia-del-dinero';
+      var rows = isTaller ? tallerRowsFor(ws) : cursoRows;
       var head = isTaller
         ? ['Nombre','Email','Teléfono','Aporte','Estado','Inscripto','Pagado','ID pago MP']
         : ['Nombre','Email','Plan','Estado','Inscripto','Pagado','ID pago MP'];
@@ -266,7 +274,7 @@
       var blob = new Blob(['\ufeff'+csv], { type:'text/csv;charset=utf-8;' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = (isTaller ? 'taller-post-humanidad-' : 'curso-energia-dinero-') + new Date().toISOString().slice(0,10) + '.csv';
+      a.download = (isTaller ? ws + '-' : 'curso-energia-dinero-') + new Date().toISOString().slice(0,10) + '.csv';
       a.click();
       URL.revokeObjectURL(a.href);
     }

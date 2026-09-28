@@ -152,6 +152,25 @@
           + '</div>';
       }
 
+      function getPerfumeCardHtml(){
+        var WA_LINK = 'PONER_AQUI_LINK_GRUPO_WA';
+        var waReady = WA_LINK.indexOf('PONER_AQUI') === -1;
+        return '<div class="mc-card">'
+          + '<span class="mc-badge paid">Inscripción confirmada</span>'
+          + '<h2>Taller: El perfume que lleva el dolor</h2>'
+          + '<p class="lead">Ya tenés tu lugar reservado. '+(waReady ? 'Entrá al grupo de WhatsApp para recibir el link de Zoom y las novedades del encuentro.' : 'Muy pronto te llega el link del grupo de WhatsApp con el Zoom del encuentro.')+'</p>'
+          + '<div class="mc-facts">'
+          + '<div class="mc-fact"><div class="k">Fecha</div><div class="v">Lunes 12 de octubre</div></div>'
+          + '<div class="mc-fact"><div class="k">Horario</div><div class="v">10 a 12 hs (ARG)</div></div>'
+          + '<div class="mc-fact"><div class="k">Modalidad</div><div class="v">Virtual, por Zoom</div></div>'
+          + '</div>'
+          + '<div class="mc-actions">'
+          + (waReady ? '<a class="mc-btn" href="'+WA_LINK+'" target="_blank" rel="noopener">Sumarme al grupo de WhatsApp</a>' : '')
+          + '<a class="mc-btn ghost" href="/el-perfume-que-lleva-el-dolor">Ver el taller</a>'
+          + '</div>'
+          + '</div>';
+      }
+
       function card(r){
         var paid = r.status === 'paid';
         var badge = paid
@@ -195,22 +214,26 @@
         if (isTallerRegistered) {
           html = getTallerCardHtml() + html;
         }
+        if (isPerfumeRegistered) {
+          html = getPerfumeCardHtml() + html;
+        }
 
         if (!html){
           cont.innerHTML = '<div class="mc-empty"><p>Todavía no estás inscripto a ningún curso.</p>'
-            + '<a class="mc-btn" href="/taller-ia-la-post-humanidad">Ver el taller</a></div>';
+            + '<a class="mc-btn" href="/el-perfume-que-lleva-el-dolor">Ver el taller</a></div>';
           return;
         }
         cont.innerHTML = html;
       }
 
       var isTallerRegistered = localStorage.getItem('as_taller_post_humanidad_registered') === 'true' || localStorage.getItem('as_taller_paid') === 'true';
+      var isPerfumeRegistered = localStorage.getItem('as_taller_perfume_registered') === 'true';
 
       client.auth.getSession().then(function(res){
         var session = res.data && res.data.session;
         var user = session && session.user;
 
-        if (!user && !isTallerRegistered) {
+        if (!user && !isTallerRegistered && !isPerfumeRegistered) {
           show('state-anon');
           return;
         }
