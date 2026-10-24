@@ -1,0 +1,466 @@
+<title>Voz Rock Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: amp-panel tabs over a single column; keyboard strip is the recurring instrument */
+:root {
+  --bg: #f3f1ee; --panel: #ffffff; --ink: #1d1c22; --muted: #6b6672; --line: #dcd7d2;
+  --accent: #c2410c; --accent-ink: #ffffff; --glow: #f59e0b; --ok: #15803d; --warn: #b45309; --bad: #b91c1c;
+  --key-w: #ffffff; --key-b: #2a2830; --band: rgba(194,65,12,.22); --band-c: rgba(194,65,12,.55);
+  --f-display: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif;
+  --f-body: "Work Sans", system-ui, -apple-system, Segoe UI, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16151a; --panel: #211f26; --ink: #ece8e3; --muted: #a29ca8; --line: #36323d;
+  --accent: #f08a3c; --accent-ink: #1a1208; --glow: #fbbf24; --ok: #4ade80; --warn: #fbbf24; --bad: #f87171;
+  --key-w: #d9d4cf; --key-b: #0d0c10; --band: rgba(240,138,60,.25); --band-c: rgba(240,138,60,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #16151a; --panel: #211f26; --ink: #ece8e3; --muted: #a29ca8; --line: #36323d;
+  --accent: #f08a3c; --accent-ink: #1a1208; --glow: #fbbf24; --ok: #4ade80; --warn: #fbbf24; --bad: #f87171;
+  --key-w: #d9d4cf; --key-b: #0d0c10; --band: rgba(240,138,60,.25); --band-c: rgba(240,138,60,.6); color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5 }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 16px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px }
+header h1 { font-family: var(--f-display); font-weight: 800; font-size: 2.6rem; line-height: 1; margin: 0; letter-spacing: .01em; text-transform: uppercase }
+header h1 span { color: var(--accent) }
+header p { margin: 4px 0 0; color: var(--muted) }
+nav { display: flex; gap: 6px; flex-wrap: wrap }
+nav button { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; text-transform: uppercase; letter-spacing: .04em; padding: 8px 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; cursor: pointer }
+nav button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent) }
+section.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; min-width: 0 }
+h2 { font-family: var(--f-display); font-weight: 800; font-size: 1.6rem; text-transform: uppercase; margin: 0; text-wrap: balance }
+h3 { font-size: 1rem; margin: 0; font-weight: 600 }
+.muted { color: var(--muted) }
+.small { font-size: .85rem }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px }
+label.f { display: grid; gap: 4px; font-size: .82rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
+input, select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px; width: 100%; min-width: 0 }
+button.b { font: inherit; font-weight: 600; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer }
+button.b.pri { background: var(--accent); color: var(--accent-ink); border-color: var(--accent) }
+button.b.big { font-family: var(--f-display); font-size: 1.6rem; text-transform: uppercase; letter-spacing: .04em; padding: 16px 20px; width: 100% }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--glow); outline-offset: 2px }
+.note-big { font-family: var(--f-mono); font-size: 3.4rem; line-height: 1; text-align: center }
+.note-sub { text-align: center; font-family: var(--f-mono); color: var(--muted) }
+.meter { position: relative; height: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 5px }
+.meter i { position: absolute; top: -4px; width: 4px; height: 16px; background: var(--accent); border-radius: 2px; left: 50%; transition: left .08s }
+.meter b { position: absolute; left: 50%; top: -2px; width: 1px; height: 12px; background: var(--muted) }
+.kb { overflow-x: auto; border-radius: 6px }
+.kb svg { display: block }
+.stat { display: grid; gap: 2px }
+.stat .v { font-family: var(--f-mono); font-size: 1.25rem }
+.stat .k { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted) }
+.pill { display: inline-block; font-size: .78rem; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor }
+.pill.ok { color: var(--ok) } .pill.warn { color: var(--warn) } .pill.bad { color: var(--bad) }
+.list { display: grid; gap: 8px }
+.item { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; min-width: 0 }
+.item .t { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: baseline }
+.mono { font-family: var(--f-mono) }
+.ex { border-left: 3px solid var(--line); padding: 6px 10px }
+.ex.on { border-left-color: var(--accent); background: var(--band) }
+.now { font-family: var(--f-display); font-size: 2rem; text-transform: uppercase; line-height: 1.1; text-wrap: balance }
+.warnbox { border: 1px solid var(--warn); color: var(--ink); border-radius: 8px; padding: 10px 12px; font-size: .9rem }
+[hidden] { display: none !important }
+x-close { cursor: pointer }
+@media (prefers-reduced-motion: reduce) { .meter i { transition: none } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Voz <span>Rock</span> Lab</h1>
+    <p>Medí tu rango, adaptá canciones a tu voz y practicá con una rutina guiada manos libres.</p>
+  </header>
+
+  <nav role="tablist">
+    <button role="tab" data-tab="rango" aria-selected="true">Rango</button>
+    <button role="tab" data-tab="canciones" aria-selected="false">Canciones</button>
+    <button role="tab" data-tab="rutina" aria-selected="false">Rutina</button>
+  </nav>
+
+  <!-- RANGO -->
+  <div class="tab" id="tab-rango" style="display:grid;gap:18px">
+    <section class="card">
+      <h2>Tu rango actual</h2>
+      <div id="rangeSummary"></div>
+      <div class="kb" id="kbMain"></div>
+      <p class="small muted">Banda clara: rango total (lo que llegás a emitir). Banda fuerte: zona cómoda (tesitura), donde conviene que caiga la melodía de tus temas.</p>
+    </section>
+
+    <section class="card">
+      <h2>Medir</h2>
+      <div class="row">
+        <button class="b" id="mLive">Micrófono en vivo</button>
+        <button class="b" id="mFile">Grabar / subir audio</button>
+        <button class="b" id="mEar">Por oído (teclado)</button>
+      </div>
+      <input type="file" id="fileIn" accept="audio/*" capture="user" hidden>
+
+      <div id="liveBox" hidden style="display:grid;gap:10px">
+        <div class="note-big" id="liveNote">–</div>
+        <div class="note-sub" id="liveHz">cantá una nota sostenida</div>
+        <div class="meter"><b></b><i id="liveNeedle"></i></div>
+        <div class="grid2">
+          <div class="stat"><span class="k">Más grave sostenida</span><span class="v" id="liveLo">–</span></div>
+          <div class="stat"><span class="k">Más aguda sostenida</span><span class="v" id="liveHi">–</span></div>
+        </div>
+        <p class="small muted">Bajá con una "o" relajada hasta la nota más grave que suene clara; después subí con "u" o un lip trill hasta la más aguda sin gritar. Cuenta una nota si la sostenés unos 0,3 s.</p>
+        <div class="row"><button class="b pri" id="liveSave">Guardar medición</button><button class="b" id="liveStop">Cortar micrófono</button></div>
+      </div>
+
+      <div id="fileBox" hidden style="display:grid;gap:10px">
+        <p class="small">Grabá una nota de voz (30–60 s): una sirena de lo más grave a lo más agudo y vuelta, o escalas. La app detecta las notas sostenidas.</p>
+        <div id="fileResult" class="muted small">Procesando…</div>
+      </div>
+
+      <div id="earBox" hidden style="display:grid;gap:10px">
+        <p class="small">Tocá una tecla para escuchar la nota y fijate si la llegás a cantar. Marcá los cuatro límites.</p>
+        <div class="kb" id="kbEar"></div>
+        <div class="grid2">
+          <label class="f">Más grave posible<select id="eLo"></select></label>
+          <label class="f">Grave cómoda<select id="eCLo"></select></label>
+          <label class="f">Aguda cómoda<select id="eCHi"></select></label>
+          <label class="f">Más aguda posible<select id="eHi"></select></label>
+        </div>
+        <button class="b pri" id="earSave">Guardar medición</button>
+      </div>
+
+      <p id="measureMsg" class="small" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Historial</h2>
+      <div id="history" class="list"></div>
+    </section>
+  </div>
+
+  <!-- CANCIONES -->
+  <div class="tab" id="tab-canciones" hidden style="display:grid;gap:18px">
+    <section class="card">
+      <h2>Adaptar un tema</h2>
+      <p class="small muted">Cargá el tono original y la nota más grave y más aguda de la melodía cantada (no de la guitarra). Si no las sabés, pasame el tema y te las calculo.</p>
+      <div class="grid2">
+        <label class="f" style="grid-column:1/-1">Tema<input id="sTitle" placeholder="Ej: Rezo por vos – Charly García"></label>
+        <label class="f">Tono original<select id="sKey"></select></label>
+        <label class="f">Modo<select id="sMode"><option value="M">Mayor</option><option value="m">Menor</option></select></label>
+        <label class="f">Melodía: nota más grave<select id="sLo"></select></label>
+        <label class="f">Melodía: nota más aguda<select id="sHi"></select></label>
+      </div>
+      <div id="songPreview"></div>
+      <button class="b pri" id="sSave">Guardar tema</button>
+    </section>
+    <section class="card">
+      <h2>Mis temas</h2>
+      <div id="songs" class="list"></div>
+    </section>
+  </div>
+
+  <!-- RUTINA -->
+  <div class="tab" id="tab-rutina" hidden style="display:grid;gap:18px">
+    <section class="card">
+      <h2>Rutina guiada</h2>
+      <div class="warnbox">Si vas manejando: dale play antes de arrancar y no mires la pantalla. Todo se explica por audio. Volumen medio, cuello suelto; si algo raspa o duele, cortá ese ejercicio.</div>
+      <div class="grid2">
+        <label class="f">Duración<select id="rDur"><option value="short">Corta (~12 min)</option><option value="long" selected>Completa (~22 min)</option></select></label>
+        <label class="f">Rango que usa<select id="rRange"></select></label>
+      </div>
+      <button class="b pri big" id="rGo">Arrancar rutina</button>
+      <div class="row"><button class="b" id="rSkip" disabled>Siguiente ejercicio</button><button class="b" id="rStop" disabled>Parar</button></div>
+      <div class="now" id="rNow">Listo para arrancar</div>
+      <div class="mono muted" id="rNote"></div>
+    </section>
+    <section class="card">
+      <h2>Qué vas a hacer</h2>
+      <div id="exList" class="list"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+const NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const SOLF = ["Do","Do#","Re","Re#","Mi","Fa","Fa#","Sol","Sol#","La","La#","Si"];
+const KEYS = ["C","C#/Db","D","Eb","E","F","F#/Gb","G","Ab","A","Bb","B"];
+const nn = m => NAMES[((m%12)+12)%12] + (Math.floor(m/12)-1);
+const sol = m => SOLF[((m%12)+12)%12];
+const label = m => `${nn(m)} (${sol(m)})`;
+const hz2m = f => 69 + 12*Math.log2(f/440);
+const m2hz = m => 440*Math.pow(2,(m-69)/12);
+const KB_LO = 36, KB_HI = 84; // C2..C6
+const $ = id => document.getElementById(id);
+const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d }catch(e){ return d } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)) }catch(e){} } };
+
+// ---------- data layer: shared db when available, localStorage otherwise ----------
+let ranges = store.get("vrl.ranges", []);
+let songs = store.get("vrl.songs", []);
+let db = null;
+const sortRanges = () => ranges.sort((a,b)=>a.date<b.date?-1:1);
+async function initDb(){
+  try { db = window.claude && await window.claude.use("db"); } catch(e){ db = null }
+  if (!db) return;
+  db.collection("ranges").onSnapshot(s => { if (s.size || !ranges.length) { ranges = s.docs.map(d=>({id:d.id,...d.data()})); sortRanges(); renderRange(); renderHistory(); renderSongs(); fillRoutineRange(); } else migrate("ranges", ranges); }, ()=>{});
+  db.collection("songs").onSnapshot(s => { if (s.size || !songs.length) { songs = s.docs.map(d=>({id:d.id,...d.data()})); renderSongs(); } else migrate("songs", songs); }, ()=>{});
+}
+let migrated = {};
+function migrate(col, arr){ if (migrated[col]) return; migrated[col]=true; arr.forEach(x=>{ const {id,...rest}=x; db.collection(col).add(rest).catch(()=>{}) }) }
+function addRange(r){ r.date = new Date().toISOString(); if (db) db.collection("ranges").add(r).catch(()=>{ ranges.push(r); persist() }); else { ranges.push(r); persist() } }
+function addSong(s){ s.date = new Date().toISOString(); if (db) db.collection("songs").add(s).catch(()=>{ songs.push(s); persist() }); else { songs.push(s); persist() } }
+function delItem(col, item){ if (db && item.id) db.collection(col).doc(item.id).delete().catch(()=>{}); else { if (col==="songs") songs = songs.filter(x=>x!==item); else ranges = ranges.filter(x=>x!==item); persist() } }
+function persist(){ store.set("vrl.ranges", ranges.filter(r=>!r.id)); store.set("vrl.songs", songs.filter(s=>!s.id)); sortRanges(); renderRange(); renderHistory(); renderSongs(); fillRoutineRange(); }
+
+const PRESETS = [
+  {name:"Ejemplo: barítono (A2–A4)", lo:43, cLo:45, cHi:64, hi:69},
+  {name:"Ejemplo: tenor (C3–C5)", lo:47, cLo:50, cHi:67, hi:72},
+  {name:"Ejemplo: bajo (E2–E4)", lo:40, cLo:43, cHi:60, hi:64},
+  {name:"Ejemplo: mezzo / contralto (G3–G5)", lo:53, cLo:57, cHi:74, hi:79},
+];
+const latest = () => ranges.length ? ranges[ranges.length-1] : null;
+
+// ---------- voice classification ----------
+const TYPES = [["Bajo",40,64],["Barítono",45,69],["Tenor",48,72],["Contralto",53,77],["Mezzosoprano",57,81],["Soprano",60,84]];
+function classify(r){
+  const best = TYPES.map(([n,a,b])=>{ const ov=Math.max(0,Math.min(b,r.hi)-Math.max(a,r.lo)); const miss=(b-a)-ov; const cen=Math.abs(((r.cLo+r.cHi)/2)-((a+b)/2)); return {n,score:ov*2-miss-cen} }).sort((x,y)=>y.score-x.score);
+  return best[0].n;
+}
+
+// ---------- keyboard SVG ----------
+function kbSVG(opts={}){
+  const isB = m => [1,3,6,8,10].includes(m%12);
+  const whites=[]; for(let m=KB_LO;m<=KB_HI;m++) if(!isB(m)) whites.push(m);
+  const W=22, H=74, w=whites.length*W;
+  const xOf = m => { const i=whites.indexOf(isB(m)?m-1:m); return i*W + (isB(m)?W*0.7:0) };
+  let s=`<svg viewBox="0 0 ${w} ${H+18}" width="${Math.max(w,560)}" height="${(H+18)*Math.max(w,560)/w}" role="img" aria-label="Teclado de C2 a C6">`;
+  const band=(a,b,col)=>{ if(a==null||b==null) return; const x1=xOf(a), x2=xOf(b)+(isB(b)?W*0.6:W); s+=`<rect x="${x1}" y="0" width="${x2-x1}" height="${H}" fill="${col}"/>` };
+  whites.forEach((m,i)=>{ s+=`<rect data-m="${m}" x="${i*W+0.5}" y="0.5" width="${W-1}" height="${H-1}" rx="2" fill="var(--key-w)" stroke="var(--line)"/>` });
+  if (opts.r){ band(opts.r.lo,opts.r.hi,"var(--band)"); band(opts.r.cLo,opts.r.cHi,"var(--band-c)"); }
+  if (opts.song){ const x1=xOf(opts.song[0]), x2=xOf(opts.song[1])+W*0.6; s+=`<rect x="${x1}" y="${H-12}" width="${x2-x1}" height="8" rx="3" fill="var(--ink)" opacity=".75"/>` }
+  for(let m=KB_LO;m<=KB_HI;m++) if(isB(m)) s+=`<rect data-m="${m}" x="${xOf(m)}" y="0" width="${W*0.6}" height="${H*0.6}" rx="2" fill="var(--key-b)" opacity=".92"/>`;
+  if (opts.mark!=null) s+=`<circle cx="${xOf(opts.mark)+(isB(opts.mark)?W*0.3:W/2)}" cy="${H-22}" r="6" fill="var(--glow)"/>`;
+  whites.forEach((m,i)=>{ if(m%12===0) s+=`<text x="${i*W+W/2}" y="${H+14}" text-anchor="middle" font-size="10" font-family="JetBrains Mono, monospace" fill="var(--muted)">C${m/12-1}</text>` });
+  return s+"</svg>";
+}
+
+// ---------- RANGO render ----------
+function renderRange(){
+  const r = latest();
+  if (!r){
+    const ex = PRESETS[0];
+    $("rangeSummary").innerHTML = `<p class="muted small">Todavía no mediste tu voz. Abajo ves un <b>ejemplo</b> de barítono; medí la tuya en "Medir".</p>`;
+    $("kbMain").innerHTML = kbSVG({r:ex});
+    return;
+  }
+  const semis = r.hi - r.lo;
+  $("rangeSummary").innerHTML = `<div class="grid2">
+    <div class="stat"><span class="k">Rango total</span><span class="v">${nn(r.lo)} – ${nn(r.hi)}</span><span class="small muted">${semis} semitonos · ${(semis/12).toFixed(1)} octavas</span></div>
+    <div class="stat"><span class="k">Zona cómoda</span><span class="v">${nn(r.cLo)} – ${nn(r.cHi)}</span><span class="small muted">${sol(r.cLo)} a ${sol(r.cHi)}</span></div>
+    <div class="stat"><span class="k">Tipo aproximado</span><span class="v">${classify(r)}</span><span class="small muted">orientativo, no es una etiqueta fija</span></div>
+  </div>`;
+  $("kbMain").innerHTML = kbSVG({r});
+}
+function renderHistory(){
+  if (!ranges.length){ $("history").innerHTML = `<p class="muted small">Cada medición queda acá para ver cómo se abre tu rango con la práctica.</p>`; return }
+  $("history").innerHTML = ranges.slice().reverse().map((r,i)=>`<div class="item"><div class="t"><span class="mono">${nn(r.lo)} – ${nn(r.hi)} <span class="muted">· cómoda ${nn(r.cLo)}–${nn(r.cHi)}</span></span><span class="small muted">${new Date(r.date).toLocaleDateString("es-AR",{day:"numeric",month:"short",year:"numeric"})} · ${r.method||""} <button class="b small" data-del-r="${ranges.length-1-i}" style="padding:2px 8px">Borrar</button></span></div></div>`).join("");
+}
+$("history").addEventListener("click", e => { const i=e.target.dataset.delR; if (i!=null) delItem("ranges", ranges[+i]) });
+
+// ---------- audio ----------
+let ac = null;
+const ctx = () => { if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); if (ac.state==="suspended") ac.resume(); return ac };
+function tone(m, t, dur, vol=0.18, glideTo=null){
+  const a = ctx(); const g = a.createGain(); g.connect(a.destination);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.02); g.gain.exponentialRampToValueAtTime(vol*0.5,t+dur*0.6); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  [[ "triangle",1,1],["sine",2,0.25],["sine",3,0.08]].forEach(([type,mul,v])=>{ const o=a.createOscillator(), og=a.createGain(); o.type=type; o.frequency.setValueAtTime(m2hz(m)*mul,t); if(glideTo!=null) o.frequency.exponentialRampToValueAtTime(m2hz(glideTo)*mul,t+dur*0.9); og.gain.value=v; o.connect(og).connect(g); o.start(t); o.stop(t+dur+0.05) });
+}
+
+// ---------- pitch detection (YIN) ----------
+function yin(buf, sr){
+  let rms=0; for (let i=0;i<buf.length;i++) rms+=buf[i]*buf[i]; rms=Math.sqrt(rms/buf.length); if (rms<0.012) return null;
+  const minT=Math.floor(sr/1100), maxT=Math.min(Math.floor(sr/65), (buf.length>>1)-1), N=buf.length>>1;
+  const d=new Float32Array(maxT+1); let sum=0, tau=-1;
+  for (let t=1;t<=maxT;t++){ let s=0; for(let i=0;i<N;i++){ const x=buf[i]-buf[i+t]; s+=x*x } sum+=s; d[t]= s*t/(sum||1);
+    if (t>minT && d[t-1]<0.12 && d[t]>d[t-1]){ tau=t-1; break } }
+  if (tau<0) return null;
+  const a=d[tau-1], b=d[tau], c=d[tau+1]; const p = tau + (a-c)/(2*(a-2*b+c)||1);
+  return sr/p;
+}
+function stableNotes(seq, minFrames){ // seq of midi (rounded) or null → set of notes sustained
+  const out=[]; let cur=null, n=0;
+  seq.forEach(m=>{ if(m!=null && m===cur) n++; else { if(cur!=null && n>=minFrames) out.push(cur); cur=m; n=1 } });
+  if(cur!=null && n>=minFrames) out.push(cur); return out;
+}
+function rangeFromNotes(notes){
+  if (notes.length<2) return null; const s=[...notes].sort((a,b)=>a-b);
+  const lo=s[0], hi=s[s.length-1]; const span=hi-lo;
+  return {lo, hi, cLo: lo+Math.min(3,Math.round(span*0.12)), cHi: hi-Math.min(4,Math.round(span*0.15))};
+}
+
+// live
+let live = null;
+async function startLive(){
+  showBox("liveBox"); $("measureMsg").textContent="";
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    const a = ctx(); const src=a.createMediaStreamSource(stream); const an=a.createAnalyser(); an.fftSize=2048; src.connect(an);
+    live = {stream, an, buf:new Float32Array(2048), lo:null, hi:null, cur:null, since:0, raf:0};
+    const loop = () => {
+      an.getFloatTimeDomainData(live.buf); const f=yin(live.buf, a.sampleRate);
+      if (f){ const mf=hz2m(f), m=Math.round(mf), cents=Math.round((mf-m)*100);
+        $("liveNote").textContent = nn(m); $("liveHz").textContent = `${sol(m)} · ${f.toFixed(0)} Hz · ${cents>0?"+":""}${cents} cents`;
+        $("liveNeedle").style.left = `calc(${50+cents}% - 2px)`;
+        const now=performance.now(); if (m!==live.cur){ live.cur=m; live.since=now } else if (now-live.since>300){
+          if (live.lo==null||m<live.lo) live.lo=m; if (live.hi==null||m>live.hi) live.hi=m;
+          $("liveLo").textContent = live.lo!=null?label(live.lo):"–"; $("liveHi").textContent = live.hi!=null?label(live.hi):"–"; }
+      }
+      live.raf = requestAnimationFrame(loop);
+    }; loop();
+  } catch(e){
+    hideBoxes(); $("measureMsg").textContent = "Este visor no da acceso al micrófono. Usá \"Grabar / subir audio\" (graba con el celu y lo analiza) o \"Por oído\".";
+  }
+}
+function stopLive(){ if(!live) return; cancelAnimationFrame(live.raf); live.stream.getTracks().forEach(t=>t.stop()); live=null }
+$("mLive").onclick = startLive;
+$("liveStop").onclick = () => { stopLive(); hideBoxes() };
+$("liveSave").onclick = () => { if(!live||live.lo==null||live.hi==null||live.hi-live.lo<3){ $("measureMsg").textContent="Todavía no hay suficientes notas sostenidas."; return }
+  const r=rangeFromNotes([live.lo,live.hi]); r.method="mic"; addRange(r); stopLive(); hideBoxes(); $("measureMsg").textContent=`Guardado: ${nn(r.lo)} – ${nn(r.hi)}.`; showTab("rango") };
+
+// file
+$("mFile").onclick = () => $("fileIn").click();
+$("fileIn").onchange = async e => {
+  const f = e.target.files[0]; if(!f) return; showBox("fileBox"); $("fileResult").textContent="Procesando…";
+  try {
+    const ab = await f.arrayBuffer(); const audio = await ctx().decodeAudioData(ab); const ch = audio.getChannelData(0), sr=audio.sampleRate;
+    const seq=[]; const W=2048, hop=1024; for (let i=0;i+W<ch.length;i+=hop){ const p=yin(ch.subarray(i,i+W),sr); seq.push(p?Math.round(hz2m(p)):null) }
+    const minF = Math.ceil(0.25*sr/hop); const r = rangeFromNotes(stableNotes(seq,minF));
+    if(!r){ $("fileResult").textContent="No encontré notas sostenidas. Probá grabar más cerca y sosteniendo cada nota un segundo."; return }
+    r.method="audio"; addRange(r);
+    $("fileResult").innerHTML = `Detecté de <b class="mono">${label(r.lo)}</b> a <b class="mono">${label(r.hi)}</b>. Guardado en el historial.`;
+  } catch(err){ $("fileResult").textContent="No pude leer ese audio. Probá con m4a, mp3 o wav." }
+  e.target.value="";
+};
+
+// ear
+function fillNoteSelect(sel, lo, hi, val){ sel.innerHTML=""; for(let m=lo;m<=hi;m++){ const o=document.createElement("option"); o.value=m; o.textContent=label(m); sel.appendChild(o) } sel.value=val }
+$("mEar").onclick = () => { showBox("earBox"); const r=latest()||PRESETS[0]; [["eLo","lo"],["eCLo","cLo"],["eCHi","cHi"],["eHi","hi"]].forEach(([id,k])=>fillNoteSelect($(id),KB_LO,KB_HI,r[k])); drawEarKb() };
+function drawEarKb(){ const r={lo:+$("eLo").value,cLo:+$("eCLo").value,cHi:+$("eCHi").value,hi:+$("eHi").value}; $("kbEar").innerHTML=kbSVG({r}) }
+["eLo","eCLo","eCHi","eHi"].forEach(id=>$(id).addEventListener("change",drawEarKb));
+$("kbEar").addEventListener("click", e => { const m=e.target.dataset && e.target.dataset.m; if(m) { tone(+m, ctx().currentTime+0.02, 1.4, 0.25); $("measureMsg").textContent = `Sonó ${label(+m)}` } });
+$("earSave").onclick = () => { const r={lo:+$("eLo").value,cLo:+$("eCLo").value,cHi:+$("eCHi").value,hi:+$("eHi").value,method:"oído"};
+  if(!(r.lo<=r.cLo&&r.cLo<r.cHi&&r.cHi<=r.hi)){ $("measureMsg").textContent="Revisá el orden: grave posible ≤ grave cómoda < aguda cómoda ≤ aguda posible."; return }
+  addRange(r); hideBoxes(); $("measureMsg").textContent="Medición guardada." };
+
+function showBox(id){ hideBoxes(); $(id).hidden=false }
+function hideBoxes(){ ["liveBox","fileBox","earBox"].forEach(b=>$(b).hidden=true) }
+
+// ---------- CANCIONES ----------
+const SHAPES_M = [0,7,2,9,4]; // C G D A E
+const SHAPES_m = [9,4,2];     // Am Em Dm
+const keyName = (pc,mode) => KEYS[(pc+12)%12].split("/")[0] + (mode==="m"?"m":"");
+function capoOptions(pc, mode){
+  const shapes = mode==="m"?SHAPES_m:SHAPES_M; const out=[];
+  for (let c=0;c<=7;c++){ const shape=((pc-c)%12+12)%12; if (shapes.includes(shape)) out.push({capo:c, shape:keyName(shape,mode)}) }
+  return out.slice(0,3);
+}
+function bestShift(sLo, sHi, r){
+  let best=null;
+  for (let s=-14;s<=14;s++){
+    const lo=sLo+s, hi=sHi+s; const over=Math.max(0,hi-r.cHi)+Math.max(0,r.cLo-lo); const hard=Math.max(0,hi-r.hi)+Math.max(0,r.lo-lo);
+    // rock: preferir que el pico quede arriba de la zona cómoda, sin salirse
+    const score = hard*100 + over*10 + Math.abs(hi-r.cHi)*1 + Math.abs(s)*0.6 + (Math.abs(s)>=12?3:0);
+    if(!best||score<best.score) best={s,score,lo,hi,over,hard};
+  }
+  return best;
+}
+function fit(lo,hi,r){ if (lo<r.lo||hi>r.hi) return ["bad","fuera de tu rango"]; if (lo<r.cLo||hi>r.cHi) return ["warn","exigido en los extremos"]; return ["ok","cómodo"] }
+function songCard(s, r, withDel, idx){
+  const pc=+s.key, sh=bestShift(+s.lo,+s.hi,r); const [cl,ct]=fit(+s.lo,+s.hi,r); const [cl2,ct2]=fit(sh.lo,sh.hi,r);
+  const newPc=((pc+sh.s)%12+12)%12; const caps=capoOptions(newPc,s.mode);
+  const move = sh.s===0 ? "Dejalo en el tono original" : `${sh.s>0?"Subir":"Bajar"} ${Math.abs(sh.s)} semitono${Math.abs(sh.s)>1?"s":""}${Math.abs(sh.s)>=12?" (cambio de octava)":""}`;
+  return `<div class="item">
+    <div class="t"><h3>${esc(s.title||"Sin título")}</h3>${withDel?`<button class="b small" data-del-s="${idx}" style="padding:2px 8px">Borrar</button>`:""}</div>
+    <div class="small">Original: <b class="mono">${keyName(pc,s.mode)}</b> · melodía <span class="mono">${nn(+s.lo)}–${nn(+s.hi)}</span> <span class="pill ${cl}">${ct}</span></div>
+    <div class="small"><b>${move}</b> → tono <b class="mono">${keyName(newPc,s.mode)}</b> · melodía <span class="mono">${nn(sh.lo)}–${nn(sh.hi)}</span> <span class="pill ${cl2}">${ct2}</span></div>
+    ${sh.s!==0&&caps.length?`<div class="small muted">En guitarra: ${caps.map(c=>c.capo?`cejilla ${c.capo} con formas de ${c.shape}`:`formas de ${c.shape} sin cejilla`).join(" · ")}</div>`:""}
+    <div class="kb">${kbSVG({r, song:[sh.lo,sh.hi]})}</div>
+  </div>`;
+}
+const esc = t => String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function initSongForm(){ KEYS.forEach((k,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=k; $("sKey").appendChild(o) }); $("sKey").value=4; fillNoteSelect($("sLo"),KB_LO,KB_HI,47); fillNoteSelect($("sHi"),KB_LO,KB_HI,64); }
+function formSong(){ return {title:$("sTitle").value.trim(), key:+$("sKey").value, mode:$("sMode").value, lo:+$("sLo").value, hi:+$("sHi").value} }
+function renderPreview(){ const s=formSong(); const r=latest()||PRESETS[0]; $("songPreview").innerHTML = s.hi>s.lo ? songCard({...s,title:s.title||"Vista previa"}, r, false) : `<p class="small" style="color:var(--bad)">La nota aguda tiene que estar arriba de la grave.</p>` }
+["sTitle","sKey","sMode","sLo","sHi"].forEach(id=>$(id).addEventListener("input",renderPreview));
+$("sSave").onclick = () => { const s=formSong(); if(!s.title||s.hi<=s.lo) { $("songPreview").insertAdjacentHTML("afterbegin",`<p class="small" style="color:var(--bad)">Poné un nombre y un rango de melodía válido.</p>`); return } addSong(s); $("sTitle").value=""; renderPreview() };
+function renderSongs(){
+  const r=latest(); const note = r?"":`<p class="small muted">Como todavía no mediste tu rango, los cálculos usan el ejemplo de barítono.</p>`;
+  $("songs").innerHTML = note + (songs.length ? songs.map((s,i)=>songCard(s,r||PRESETS[0],true,i)).join("") : `<p class="muted small">Todavía no cargaste temas. Pasame la lista de los que más cantás y los cargo yo.</p>`);
+  renderPreview();
+}
+$("songs").addEventListener("click", e => { const i=e.target.dataset.delS; if(i!=null) delItem("songs", songs[+i]) });
+
+// ---------- RUTINA ----------
+const EX = [
+  {id:"resp", name:"Respiración 4-4-8", type:"breath", how:"Respiración. Inhalá por la nariz llevando el aire a la panza y las costillas, sin subir los hombros. Inhalás en cuatro, sostenés cuatro, y soltás con una ese larga en ocho. Vamos."},
+  {id:"hum", name:"Humming (mmm)", pat:[0,2,4,2,0], from:"cLo+2", to:"cLo+9", dur:0.42, voc:"mmm", how:"Humming con la boca cerrada, labios sueltos, como un mmm de algo rico. Buscá sentir cosquillas en labios y nariz. Seguí las notas."},
+  {id:"trill", name:"Lip trill 1-3-5-8", pat:[0,4,7,12,7,4,0], from:"cLo+2", to:"hi-13", dur:0.32, voc:"brrr", how:"Lip trill: hacé vibrar los labios como un motorcito, brrr, y seguí el arpegio. Si los labios no vibran, apoyá dos dedos en las mejillas. Aire parejo, sin empujar."},
+  {id:"nye", name:"Twang 'ñe'", pat:[0,2,4,5,7,5,4,2,0], from:"cLo+3", to:"cHi-7", dur:0.26, voc:"ñe", how:"Twang. Cantá ñe, ñe, ñe, con sonido brillante y un poco nasal, como un chico burlón. Este es el color base de la voz rockera: brillo sin apretar la garganta."},
+  {id:"stac", name:"Staccato 'ja'", pat:[0,4,7,4,0], from:"cLo+2", to:"cHi-7", dur:0.3, gap:true, voc:"ja", how:"Staccato. Notas cortas con ja, ja, ja, cada una con un pequeño golpe de panza, como una risa. Trabaja el apoyo y el ataque limpio."},
+  {id:"siren", name:"Sirena 'u' de octava", pat:[0,12], glide:true, from:"cLo+2", to:"hi-13", dur:1.3, voc:"u", how:"Sirena. Con una u suave, deslizá de la nota grave a la octava y volvé, sin cortes. Si la voz se quiebra en el medio, bajá el volumen y dejala pasar: ese es tu pasaje."},
+  {id:"hey", name:"Llamado rockero 'ey'", pat:[0,4,7,7], from:"cHi-10", to:"cHi-4", dur:0.38, voc:"ey", rock:true, how:"Llamado rockero. Cantá ey, ey, eeey, como si llamaras a alguien en la calle: boca abierta, sonido de habla, volumen medio. Nada de grito ni cuello tenso. Si raspa, bajá un tono o pasá al siguiente."},
+  {id:"down", name:"Bajada con lip trill", pat:[7,5,4,2,0], from:"cHi-8", to:"cLo+2", dur:0.34, voc:"brrr", down:true, how:"Para cerrar, lip trill bajando desde arriba, cada vez más grave. Soltá todo y dejá que la voz se relaje."},
+];
+const SHORT = ["resp","trill","nye","siren","hey","down"];
+function rangeForRoutine(){ const v=$("rRange").value; if (v==="me") return latest(); return PRESETS[+v] }
+function fillRoutineRange(){ const sel=$("rRange"), cur=sel.value; sel.innerHTML=""; const r=latest(); if (r){ const o=document.createElement("option"); o.value="me"; o.textContent=`Mi rango (${nn(r.lo)}–${nn(r.hi)})`; sel.appendChild(o) } PRESETS.forEach((p,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=p.name.replace("Ejemplo: ",""); sel.appendChild(o) }); if ([...sel.options].some(o=>o.value===cur)) sel.value=cur; renderExList() }
+function evalPos(expr, r){ const m=expr.match(/^(lo|hi|cLo|cHi)([+-]\d+)?$/); return r[m[1]]+(m[2]?+m[2]:0) }
+function roots(ex, r, short){ let a=evalPos(ex.from,r), b=evalPos(ex.to,r); const out=[]; if(ex.down){ if(b>a) b=a-4; for(let m=a;m>=b;m--) out.push(m) } else { if(b<a) b=a+3; for(let m=a;m<=b;m++) out.push(m) } return short&&out.length>6 ? out.filter((_,i)=>i%2===0) : out }
+function renderExList(){ const r=rangeForRoutine(); const short=$("rDur").value==="short"; $("exList").innerHTML = EX.filter(e=>!short||SHORT.includes(e.id)).map(e=>{ const rs=e.type==="breath"?null:roots(e,r,short); return `<div class="ex" id="ex-${e.id}"><h3>${e.name}${e.rock?' <span class="pill warn">rock</span>':""}</h3><div class="small muted">${e.how}</div>${rs?`<div class="small mono">${nn(rs[0])} → ${nn(rs[rs.length-1])}</div>`:""}</div>` }).join("") }
+$("rDur").onchange = renderExList; $("rRange").onchange = renderExList;
+
+let run = null;
+const sleep = ms => new Promise(res=>{ const t=setTimeout(res,ms); if(run) run.timers.push(t) });
+function say(text){ return new Promise(res=>{ const done=()=>{ clearTimeout(t); res() }; const t=setTimeout(done, 1500+text.length*75);
+  try { if(!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="es-AR"; const v=speechSynthesis.getVoices().find(v=>/^es/i.test(v.lang)); if(v) u.voice=v; u.rate=1.02; u.onend=done; u.onerror=done; speechSynthesis.speak(u) } catch(e){} }) }
+async function playEx(ex, r, short, token){
+  if (ex.type==="breath"){ for (let c=0;c<(short?2:3);c++){ for (const [w,n] of [["Inhalá",4],["Sostené",4],["Soltá en ese",8]]){ if(run.token!==token) return; $("rNote").textContent=w; await say(w); for(let i=1;i<n;i++){ if(run.token!==token) return; tone(76, ctx().currentTime, 0.08, 0.05); await sleep(1000) } } } return }
+  for (const root of roots(ex,r,short)){
+    if (run.token!==token) return;
+    const a=ctx(); let t=a.currentTime+0.05;
+    $("rNote").textContent = `${ex.voc} · desde ${label(root)}`;
+    tone(root, t, 0.5, 0.12); tone(root+(ex.down?0:7), t, 0.5, 0.06); t+=0.6; // cue
+    if (ex.glide){ tone(root,t,ex.dur,0.2,root+12); t+=ex.dur; tone(root+12,t,ex.dur,0.2,root); t+=ex.dur }
+    else ex.pat.forEach((iv,i)=>{ const last=i===ex.pat.length-1; tone(root+iv, t, ex.gap?ex.dur*0.45:(last?ex.dur*2:ex.dur), 0.2); t+= last?ex.dur*2:ex.dur });
+    await sleep((t-a.currentTime)*1000+700);
+  }
+}
+async function startRoutine(){
+  ctx(); const r=rangeForRoutine(); const short=$("rDur").value==="short"; const list=EX.filter(e=>!short||SHORT.includes(e.id));
+  const token = Symbol(); run={token, timers:[], skip:false, idx:0};
+  try { run.lock = await navigator.wakeLock?.request("screen") } catch(e){}
+  $("rGo").disabled=true; $("rSkip").disabled=false; $("rStop").disabled=false;
+  await say(`Arrancamos. ${list.length} ejercicios, en tu zona entre ${sol(r.cLo)} y ${sol(r.cHi)}. Antes de cada serie suena la nota de partida.`);
+  for (let i=0;i<list.length && run && run.token===token;i++){
+    run.idx=i; const ex=list[i]; document.querySelectorAll(".ex").forEach(e=>e.classList.remove("on")); $("ex-"+ex.id)?.classList.add("on");
+    $("rNow").textContent = `${i+1}/${list.length} · ${ex.name}`; await say(ex.how); if(!run||run.token!==token) break;
+    run.exToken = Symbol(); await playEx(ex, r, short, token);
+  }
+  if (run && run.token===token){ await say("Listo. Buen laburo. Tomá un poco de agua."); endRoutine("Rutina terminada") }
+}
+function endRoutine(msg){ if(run){ run.timers.forEach(clearTimeout); try{ run.lock?.release() }catch(e){} } run=null; try{ speechSynthesis.cancel() }catch(e){} $("rGo").disabled=false; $("rSkip").disabled=true; $("rStop").disabled=true; $("rNow").textContent=msg; $("rNote").textContent=""; document.querySelectorAll(".ex").forEach(e=>e.classList.remove("on")) }
+$("rGo").onclick = startRoutine;
+$("rStop").onclick = () => endRoutine("Rutina parada");
+$("rSkip").onclick = () => { if(!run) return; // restart from next exercise
+  const next=run.idx+1; endRoutine(""); const short=$("rDur").value==="short"; const list=EX.filter(e=>!short||SHORT.includes(e.id)); if(next>=list.length){ $("rNow").textContent="Rutina terminada"; return }
+  (async()=>{ ctx(); const r=rangeForRoutine(); const token=Symbol(); run={token,timers:[],idx:next}; $("rGo").disabled=true; $("rSkip").disabled=false; $("rStop").disabled=false;
+    for(let i=next;i<list.length&&run&&run.token===token;i++){ run.idx=i; const ex=list[i]; document.querySelectorAll(".ex").forEach(e=>e.classList.remove("on")); $("ex-"+ex.id)?.classList.add("on"); $("rNow").textContent=`${i+1}/${list.length} · ${ex.name}`; await say(ex.how); if(!run||run.token!==token) break; await playEx(ex,r,short,token) }
+    if(run&&run.token===token){ await say("Listo. Buen laburo."); endRoutine("Rutina terminada") } })();
+};
+
+// ---------- tabs ----------
+function showTab(name){ document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===name)); document.querySelectorAll(".tab").forEach(t=>t.hidden = t.id!=="tab-"+name); try{ localStorage.setItem("vrl.tab",name) }catch(e){} }
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+initSongForm(); sortRanges(); renderRange(); renderHistory(); renderSongs(); fillRoutineRange();
+try { const t=localStorage.getItem("vrl.tab"); if(t) showTab(t) } catch(e){}
+initDb();
+})();
+</script>
