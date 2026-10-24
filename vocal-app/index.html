@@ -76,6 +76,7 @@ x-close { cursor: pointer }
   <nav role="tablist">
     <button role="tab" data-tab="rango" aria-selected="true">Rango</button>
     <button role="tab" data-tab="canciones" aria-selected="false">Canciones</button>
+    <button role="tab" data-tab="tecnica" aria-selected="false">Técnica</button>
     <button role="tab" data-tab="rutina" aria-selected="false">Rutina</button>
   </nav>
 
@@ -156,6 +157,21 @@ x-close { cursor: pointer }
     </section>
   </div>
 
+  <!-- TECNICA -->
+  <div class="tab" id="tab-tecnica" hidden style="display:grid;gap:18px">
+    <section class="card">
+      <h2>Pecho, twang y nasal</h2>
+      <p class="small">El <b>twang</b> y lo <b>nasal</b> se sienten parecidos, pero son dos cosas distintas, y conviene separarlas:</p>
+      <div class="grid2">
+        <div class="item"><h3>Voz de pecho</h3><div class="small muted">Tu voz hablada, llena y oscura. Pesa más a medida que subís, y si la empujás arriba termina en grito.</div></div>
+        <div class="item"><h3>Twang</h3><div class="small muted">Se angosta un "embudo" justo arriba de las cuerdas. El sonido sale brillante y metálico, y suena más fuerte con el mismo esfuerzo. Es el color del rock.</div></div>
+        <div class="item"><h3>Nasal</h3><div class="small muted">El paladar blando baja y el aire se va por la nariz. Opaca el sonido y le saca potencia. Sirve de muleta para encontrar el twang, pero después hay que soltarla.</div></div>
+      </div>
+      <p class="small">El objetivo es <b>twang oral</b>: el brillo del twang con el paladar levantado. Así podés pasar de pecho a twang (y mezclarlos) sin que la voz se vaya a la nariz ni se apriete.</p>
+    </section>
+    <div id="techList" style="display:grid;gap:18px"></div>
+  </div>
+
   <!-- RUTINA -->
   <div class="tab" id="tab-rutina" hidden style="display:grid;gap:18px">
     <section class="card">
@@ -200,6 +216,7 @@ async function initDb(){
   try { db = window.claude && await window.claude.use("db"); } catch(e){ db = null }
   if (!db) return;
   db.collection("ranges").onSnapshot(s => { if (s.size || !ranges.length) { ranges = s.docs.map(d=>({id:d.id,...d.data()})); sortRanges(); renderRange(); renderHistory(); renderSongs(); fillRoutineRange(); } else migrate("ranges", ranges); }, ()=>{});
+  db.collection("checks").onSnapshot(s => { if (s.size || !checks.length) { checks = s.docs.map(d=>({id:d.id,...d.data()})); renderTech(); } else migrate("checks", checks); }, ()=>{});
   db.collection("songs").onSnapshot(s => { if (s.size || !songs.length) { songs = s.docs.map(d=>({id:d.id,...d.data()})); renderSongs(); } else migrate("songs", songs); }, ()=>{});
 }
 let migrated = {};
@@ -403,17 +420,75 @@ const EX = [
   {id:"hum", name:"Humming (mmm)", pat:[0,2,4,2,0], from:"cLo+2", to:"cLo+9", dur:0.42, voc:"mmm", how:"Humming con la boca cerrada, labios sueltos, como un mmm de algo rico. Buscá sentir cosquillas en labios y nariz. Seguí las notas."},
   {id:"trill", name:"Lip trill 1-3-5-8", pat:[0,4,7,12,7,4,0], from:"cLo+2", to:"hi-13", dur:0.32, voc:"brrr", how:"Lip trill: hacé vibrar los labios como un motorcito, brrr, y seguí el arpegio. Si los labios no vibran, apoyá dos dedos en las mejillas. Aire parejo, sin empujar."},
   {id:"nye", name:"Twang 'ñe'", pat:[0,2,4,5,7,5,4,2,0], from:"cLo+3", to:"cHi-7", dur:0.26, voc:"ñe", how:"Twang. Cantá ñe, ñe, ñe, con sonido brillante y un poco nasal, como un chico burlón. Este es el color base de la voz rockera: brillo sin apretar la garganta."},
+  {id:"pinch", name:"Twang oral: prueba de la nariz", pat:[0,0,4,4,0], from:"cLo+4", to:"cLo+9", dur:0.6, voc:"ñe / e", how:"Prueba de la nariz. Solo si no estás manejando: tapate la nariz con dos dedos. Cantá ñe, y después e, buscando el mismo brillo. Si al tapar la nariz el sonido cambia mucho o se corta, se te está yendo a la nariz. Buscá que la e suene brillante y no cambie."},
+  {id:"manye", name:"Cambio pecho ↔ twang", pat:[0,0,0,0,0,0], from:"cLo+4", to:"cHi-5", dur:0.7, voc:"a · ñe · a · ñe", how:"Cambio de pecho a twang en la misma nota. Alterná a con voz de pecho llena, y ñe brillante: a, ñe, a, ñe. El volumen y la afinación no se mueven: solo cambia el color. Después probá a y ñá, llevando el brillo a la a."},
+  {id:"nay", name:"'Nei' de octava (mix)", pat:[0,4,7,12,7,4,0], from:"cLo+3", to:"hi-13", dur:0.3, voc:"nei", how:"Nei de octava. Cantá nei, nei, con un twang suave, subiendo y bajando la octava. Al cruzar el pasaje no empujes: dejá que el brillo te lleve. La meta es que no se note el cambio de registro."},
   {id:"stac", name:"Staccato 'ja'", pat:[0,4,7,4,0], from:"cLo+2", to:"cHi-7", dur:0.3, gap:true, voc:"ja", how:"Staccato. Notas cortas con ja, ja, ja, cada una con un pequeño golpe de panza, como una risa. Trabaja el apoyo y el ataque limpio."},
   {id:"siren", name:"Sirena 'u' de octava", pat:[0,12], glide:true, from:"cLo+2", to:"hi-13", dur:1.3, voc:"u", how:"Sirena. Con una u suave, deslizá de la nota grave a la octava y volvé, sin cortes. Si la voz se quiebra en el medio, bajá el volumen y dejala pasar: ese es tu pasaje."},
   {id:"hey", name:"Llamado rockero 'ey'", pat:[0,4,7,7], from:"cHi-10", to:"cHi-4", dur:0.38, voc:"ey", rock:true, how:"Llamado rockero. Cantá ey, ey, eeey, como si llamaras a alguien en la calle: boca abierta, sonido de habla, volumen medio. Nada de grito ni cuello tenso. Si raspa, bajá un tono o pasá al siguiente."},
   {id:"down", name:"Bajada con lip trill", pat:[7,5,4,2,0], from:"cHi-8", to:"cLo+2", dur:0.34, voc:"brrr", down:true, how:"Para cerrar, lip trill bajando desde arriba, cada vez más grave. Soltá todo y dejá que la voz se relaje."},
 ];
-const SHORT = ["resp","trill","nye","siren","hey","down"];
+const SHORT = ["resp","trill","nye","manye","nay","hey","down"];
+const CAR_SAFE = ex => ex.id!=="pinch";
+
+// ---------- TECNICA: objetivos y autoevaluación ----------
+const TECH = [
+  {id:"twang", ex:"nye", title:"1 · Encontrar el twang",
+   goal:"Que aparezca un sonido brillante y metálico sin apretar el cuello.",
+   tips:["Imitá a un chico burlón: \"ñe-ñe-ñe-ñe\", o el quack de un pato.","Sonrisa leve, lengua ancha, boca chica al principio.","Volumen de conversación: el twang suena fuerte solo, no hace falta empujar."],
+   good:["Con el mismo esfuerzo el sonido suena más fuerte y \"corta\"","Lo sentís vibrar detrás de los dientes y la nariz, no en la garganta","Lo sostenés 5 segundos sin cansarte ni toser","Podés cantarlo suave y fuerte"],
+   bad:["Raspa, pica o tenés ganas de toser","Sentís presión o apretado en el cuello","El sonido se corta o queda soplado"]},
+  {id:"oral", ex:"pinch", title:"2 · Twang oral, no nasal",
+   goal:"Que el brillo quede y el aire no se vaya por la nariz.",
+   tips:["Tapate la nariz y cantá \"ñe\" y después \"e\".","En la \"e\" con la nariz tapada, el sonido casi no tendría que cambiar.","Si cambia, imaginá un bostezo chiquito atrás para levantar el paladar, sin perder el brillo."],
+   good:["Con la nariz tapada la \"e\" suena igual que destapada","El brillo sigue en vocales abiertas: \"e\", \"a\"","Solo cambian las consonantes nasales (m, n, ñ), y es normal"],
+   bad:["Al tapar la nariz el sonido se apaga o cambia mucho","Suena a pato resfriado todo el tiempo","Para tener brillo necesitás meter la voz en la nariz"]},
+  {id:"switch", ex:"manye", title:"3 · Pasar de pecho a twang",
+   goal:"Cambiar de color a voluntad en la misma nota, con volumen y afinación iguales.",
+   tips:["Misma nota: \"a\" llena de pecho → \"ñe\" brillante → \"a\" → \"ñe\".","Después \"a\" → \"ña\": que la \"a\" se quede con el brillo.","Probá frases de un tema hablándolas primero con twang, y después cantándolas."],
+   good:["El cambio es un switch limpio, sin quiebre ni golpe","La afinación no se mueve (mirala en el micrófono en vivo)","Podés hacer una \"a\" con twang sin la \"ñ\" adelante"],
+   bad:["Al cambiar a twang se te sube la nota o el volumen","La \"a\" de pecho se pone pesada o gritada","El cambio solo te sale pasando por la nariz"]},
+  {id:"mix", ex:"nay", title:"4 · Cruzar el pasaje (mix)",
+   goal:"Subir por la zona donde la voz se quiebra sin cortar y sin gritar.",
+   tips:["Usá \"nei\" con twang suave; el twang hace de puente.","Bajá el volumen al llegar arriba: suele pasar sin esfuerzo.","Apoyá un dedo en la nuez: que suba un poco está bien, pero si salta, estás estirando."],
+   good:["Subís la octava sin quiebre o con uno chiquito","Arriba el sonido sigue \"de pecho\" pero liviano","La nuez casi no se mueve"],
+   bad:["Quiebre fuerte o voz que se va a falsete sin querer","Mentón para arriba, venas del cuello marcadas","Para llegar tenés que subir el volumen"]},
+  {id:"rock", ex:"hey", title:"5 · Llamado rockero",
+   goal:"Potencia de rock con twang y sonido de habla, sin grito.",
+   tips:["\"¡Ey!\" como llamando a alguien en la calle, boca bien abierta.","Pensá la nota hablada, no cantada.","Ponele el brillo del twang, nada de empujar con aire."],
+   good:["Suena fuerte y te queda sensación de que podrías hacerlo diez veces más","Después de la serie la voz hablada te queda igual o mejor","Hacés frases de rock en ese color sin carraspear después"],
+   bad:["Ronquera o voz cansada después","Dolor o picazón: cortá el ejercicio","Necesitás inclinar la cabeza o tensar los hombros"]},
+];
+let checks = store.get("vrl.checks", []);
+function addCheck(c){ c.date=new Date().toISOString(); if(db) db.collection("checks").add(c).catch(()=>{ checks.push(c); store.set("vrl.checks",checks.filter(x=>!x.id)); renderTech() }); else { checks.push(c); store.set("vrl.checks",checks); renderTech() } }
+function renderTech(){
+  $("techList").innerHTML = TECH.map(t=>{
+    const mine = checks.filter(c=>c.tech===t.id).sort((a,b)=>a.date<b.date?-1:1); const last = mine[mine.length-1];
+    const trend = mine.slice(-6).map(c=>`<span class="pill ${c.score>=0.75&&!c.alarm?"ok":c.alarm?"bad":"warn"}" title="${new Date(c.date).toLocaleDateString("es-AR")}">${Math.round(c.score*t.good.length)}/${t.good.length}${c.alarm?" !":""}</span>`).join(" ");
+    return `<section class="card" id="tech-${t.id}">
+      <h2>${t.title}</h2>
+      <p><b>Objetivo:</b> ${t.goal}</p>
+      <ul class="small" style="margin:0;padding-left:18px">${t.tips.map(x=>`<li>${x}</li>`).join("")}</ul>
+      <button class="b pri" data-play="${t.ex}">Practicar con notas guía</button>
+      <div class="grid2">
+        <div><h3 style="color:var(--ok)">Vas bien si…</h3>${t.good.map((g,i)=>`<label class="small" style="display:flex;gap:8px;align-items:flex-start;margin-top:6px"><input type="checkbox" data-g="${t.id}" value="${i}" style="width:auto;margin-top:4px">${g}</label>`).join("")}</div>
+        <div><h3 style="color:var(--bad)">Pará y aflojá si…</h3>${t.bad.map((g,i)=>`<label class="small" style="display:flex;gap:8px;align-items:flex-start;margin-top:6px"><input type="checkbox" data-b="${t.id}" value="${i}" style="width:auto;margin-top:4px">${g}</label>`).join("")}</div>
+      </div>
+      <div class="row"><button class="b" data-save="${t.id}">Guardar cómo me salió hoy</button><span class="small muted">${mine.length?`Últimas: ${trend}`:"Sin registros todavía"}</span></div>
+      ${last&&last.alarm?`<p class="small" style="color:var(--bad)">La última vez marcaste una señal de alarma. Hacelo más suave y en un tono más grave; si sigue, consultalo con un profe.</p>`:""}
+    </section>`}).join("");
+}
+$("techList").addEventListener("click", e => {
+  const play=e.target.dataset.play, save=e.target.dataset.save;
+  if (play){ const r=rangeForRoutine(); const ex=EX.find(x=>x.id===play); endRoutine(""); showTab("rutina"); runList([ex], 0, r, false) }
+  if (save){ const t=TECH.find(x=>x.id===save); const g=[...document.querySelectorAll(`[data-g="${save}"]:checked`)].length; const b=[...document.querySelectorAll(`[data-b="${save}"]:checked`)].map(x=>+x.value);
+    addCheck({tech:save, score:g/t.good.length, alarm:b.length>0, bad:b}); }
+});
 function rangeForRoutine(){ const v=$("rRange").value; if (v==="me") return latest(); return PRESETS[+v] }
 function fillRoutineRange(){ const sel=$("rRange"), cur=sel.value; sel.innerHTML=""; const r=latest(); if (r){ const o=document.createElement("option"); o.value="me"; o.textContent=`Mi rango (${nn(r.lo)}–${nn(r.hi)})`; sel.appendChild(o) } PRESETS.forEach((p,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=p.name.replace("Ejemplo: ",""); sel.appendChild(o) }); if ([...sel.options].some(o=>o.value===cur)) sel.value=cur; renderExList() }
 function evalPos(expr, r){ const m=expr.match(/^(lo|hi|cLo|cHi)([+-]\d+)?$/); return r[m[1]]+(m[2]?+m[2]:0) }
 function roots(ex, r, short){ let a=evalPos(ex.from,r), b=evalPos(ex.to,r); const out=[]; if(ex.down){ if(b>a) b=a-4; for(let m=a;m>=b;m--) out.push(m) } else { if(b<a) b=a+3; for(let m=a;m<=b;m++) out.push(m) } return short&&out.length>6 ? out.filter((_,i)=>i%2===0) : out }
-function renderExList(){ const r=rangeForRoutine(); const short=$("rDur").value==="short"; $("exList").innerHTML = EX.filter(e=>!short||SHORT.includes(e.id)).map(e=>{ const rs=e.type==="breath"?null:roots(e,r,short); return `<div class="ex" id="ex-${e.id}"><h3>${e.name}${e.rock?' <span class="pill warn">rock</span>':""}</h3><div class="small muted">${e.how}</div>${rs?`<div class="small mono">${nn(rs[0])} → ${nn(rs[rs.length-1])}</div>`:""}</div>` }).join("") }
+function renderExList(){ const r=rangeForRoutine(); const short=$("rDur").value==="short"; $("exList").innerHTML = routineList().map(e=>{ const rs=e.type==="breath"?null:roots(e,r,short); return `<div class="ex" id="ex-${e.id}"><h3>${e.name}${e.rock?' <span class="pill warn">rock</span>':""}</h3><div class="small muted">${e.how}</div>${rs?`<div class="small mono">${nn(rs[0])} → ${nn(rs[rs.length-1])}</div>`:""}</div>` }).join("") }
 $("rDur").onchange = renderExList; $("rRange").onchange = renderExList;
 
 let run = null;
@@ -432,34 +507,30 @@ async function playEx(ex, r, short, token){
     await sleep((t-a.currentTime)*1000+700);
   }
 }
-async function startRoutine(){
-  ctx(); const r=rangeForRoutine(); const short=$("rDur").value==="short"; const list=EX.filter(e=>!short||SHORT.includes(e.id));
-  const token = Symbol(); run={token, timers:[], skip:false, idx:0};
+function routineList(){ const short=$("rDur").value==="short"; return EX.filter(e=>(!short||SHORT.includes(e.id)) && CAR_SAFE(e)) }
+async function runList(list, start, r, short){
+  ctx(); const token=Symbol(); run={token, timers:[], idx:start, list, r, short};
   try { run.lock = await navigator.wakeLock?.request("screen") } catch(e){}
   $("rGo").disabled=true; $("rSkip").disabled=false; $("rStop").disabled=false;
-  await say(`Arrancamos. ${list.length} ejercicios, en tu zona entre ${sol(r.cLo)} y ${sol(r.cHi)}. Antes de cada serie suena la nota de partida.`);
-  for (let i=0;i<list.length && run && run.token===token;i++){
+  if (start===0 && list.length>1) await say(`Arrancamos. ${list.length} ejercicios, en tu zona entre ${sol(r.cLo)} y ${sol(r.cHi)}. Antes de cada serie suena la nota de partida.`);
+  for (let i=start;i<list.length && run && run.token===token;i++){
     run.idx=i; const ex=list[i]; document.querySelectorAll(".ex").forEach(e=>e.classList.remove("on")); $("ex-"+ex.id)?.classList.add("on");
     $("rNow").textContent = `${i+1}/${list.length} · ${ex.name}`; await say(ex.how); if(!run||run.token!==token) break;
-    run.exToken = Symbol(); await playEx(ex, r, short, token);
+    await playEx(ex, r, short, token);
   }
-  if (run && run.token===token){ await say("Listo. Buen laburo. Tomá un poco de agua."); endRoutine("Rutina terminada") }
+  if (run && run.token===token){ await say(list.length>1?"Listo. Buen laburo. Tomá un poco de agua.":"Listo."); endRoutine(list.length>1?"Rutina terminada":"Ejercicio terminado") }
 }
+function startRoutine(){ runList(routineList(), 0, rangeForRoutine(), $("rDur").value==="short") }
 function endRoutine(msg){ if(run){ run.timers.forEach(clearTimeout); try{ run.lock?.release() }catch(e){} } run=null; try{ speechSynthesis.cancel() }catch(e){} $("rGo").disabled=false; $("rSkip").disabled=true; $("rStop").disabled=true; $("rNow").textContent=msg; $("rNote").textContent=""; document.querySelectorAll(".ex").forEach(e=>e.classList.remove("on")) }
 $("rGo").onclick = startRoutine;
 $("rStop").onclick = () => endRoutine("Rutina parada");
-$("rSkip").onclick = () => { if(!run) return; // restart from next exercise
-  const next=run.idx+1; endRoutine(""); const short=$("rDur").value==="short"; const list=EX.filter(e=>!short||SHORT.includes(e.id)); if(next>=list.length){ $("rNow").textContent="Rutina terminada"; return }
-  (async()=>{ ctx(); const r=rangeForRoutine(); const token=Symbol(); run={token,timers:[],idx:next}; $("rGo").disabled=true; $("rSkip").disabled=false; $("rStop").disabled=false;
-    for(let i=next;i<list.length&&run&&run.token===token;i++){ run.idx=i; const ex=list[i]; document.querySelectorAll(".ex").forEach(e=>e.classList.remove("on")); $("ex-"+ex.id)?.classList.add("on"); $("rNow").textContent=`${i+1}/${list.length} · ${ex.name}`; await say(ex.how); if(!run||run.token!==token) break; await playEx(ex,r,short,token) }
-    if(run&&run.token===token){ await say("Listo. Buen laburo."); endRoutine("Rutina terminada") } })();
-};
+$("rSkip").onclick = () => { if(!run) return; const {list,idx,r,short}=run; endRoutine(""); if(idx+1>=list.length){ $("rNow").textContent="Terminado"; return } runList(list, idx+1, r, short) };
 
 // ---------- tabs ----------
 function showTab(name){ document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===name)); document.querySelectorAll(".tab").forEach(t=>t.hidden = t.id!=="tab-"+name); try{ localStorage.setItem("vrl.tab",name) }catch(e){} }
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
-initSongForm(); sortRanges(); renderRange(); renderHistory(); renderSongs(); fillRoutineRange();
+initSongForm(); sortRanges(); renderRange(); renderHistory(); renderSongs(); fillRoutineRange(); renderTech();
 try { const t=localStorage.getItem("vrl.tab"); if(t) showTab(t) } catch(e){}
 initDb();
 })();
