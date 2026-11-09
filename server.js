@@ -41,6 +41,11 @@ const PLAN_PRICES = { minimo: 45000, estandar: 65000, abundante: 85000 };
 const TALLERES = {
   'taller-ia-la-post-humanidad': { titulo: 'La Post Humanidad' },
   'el-perfume-que-lleva-el-dolor': { titulo: 'El perfume que lleva el dolor' },
+  // Con `precios`: no es aporte libre, quien se inscribe elige uno de estos valores (tier).
+  'camino-al-corazon': {
+    titulo: 'Camino al corazón',
+    precios: { accesible: 60000, sugerido: 90000, abundante: 120000 },
+  },
 };
 const TALLER_SLUG_DEFAULT = 'taller-ia-la-post-humanidad';
 const TALLER_MIN_APORTE = 1000;
@@ -309,14 +314,16 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
   if (!supabase) return res.status(500).json({ error: 'sin supabase' });
   if (!MP_ACCESS_TOKEN) return res.status(500).json({ error: 'MP no configurado' });
 
-  const { name, email, phone, aporte, workshop } = req.body || {};
+  const { name, email, phone, aporte, tier, workshop } = req.body || {};
   const slug = workshop || TALLER_SLUG_DEFAULT;
   const taller = TALLERES[slug];
   if (!taller) return res.status(400).json({ error: 'Taller inválido.' });
   const cleanName = (name || '').toString().trim();
   const cleanEmail = (email || '').toString().trim().toLowerCase();
   const cleanPhone = (phone || '').toString().trim();
-  const monto = Math.round(Number(aporte));
+  // Si el taller tiene precios fijos, el monto lo decide el server según el tier elegido.
+  const monto = taller.precios ? taller.precios[tier] : Math.round(Number(aporte));
+  if (taller.precios && !monto) return res.status(400).json({ error: 'Elegí uno de los valores.' });
 
   if (!cleanName) return res.status(400).json({ error: 'Falta el nombre.' });
   if (!cleanEmail || !/^\S+@\S+\.\S+$/.test(cleanEmail)) return res.status(400).json({ error: 'Email inválido.' });
@@ -337,13 +344,13 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
 
   const pref = {
     items: [{
-      title: `Taller: ${taller.titulo} (aporte libre)`,
+      title: taller.precios ? `Encuentro: ${taller.titulo} (precio ${tier})` : `Taller: ${taller.titulo} (aporte libre)`,
       quantity: 1,
       currency_id: 'ARS',
       unit_price: monto,
     }],
     external_reference: inserted.id,
-    metadata: { workshop: slug, signup_id: inserted.id, email: cleanEmail },
+    metadata: { workshop: slug, signup_id: inserted.id, email: cleanEmail, tier: tier || null },
     payer: { email: cleanEmail },
     back_urls: { success: back, pending: back, failure: back },
     auto_return: 'approved',

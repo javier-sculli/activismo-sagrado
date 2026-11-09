@@ -153,7 +153,7 @@
       }
 
       function getPerfumeCardHtml(){
-        var WA_LINK = 'PONER_AQUI_LINK_GRUPO_WA';
+        var WA_LINK = 'https://chat.whatsapp.com/EZyUxGJfZO512Sk7DcrplS?s=cl&p=i&mlu=0&ilr=4';
         var waReady = WA_LINK.indexOf('PONER_AQUI') === -1;
         return '<div class="mc-card">'
           + '<span class="mc-badge paid">Inscripción confirmada</span>'
@@ -167,6 +167,26 @@
           + '<div class="mc-actions">'
           + (waReady ? '<a class="mc-btn" href="'+WA_LINK+'" target="_blank" rel="noopener">Sumarme al grupo de WhatsApp</a>' : '')
           + '<a class="mc-btn ghost" href="/el-perfume-que-lleva-el-dolor">Ver el taller</a>'
+          + '</div>'
+          + '</div>';
+      }
+
+      function getCaminoCardHtml(){
+        var WA_LINK = 'PONER_AQUI_LINK_GRUPO_WA';
+        var waReady = WA_LINK.indexOf('PONER_AQUI') === -1;
+        return '<div class="mc-card">'
+          + '<span class="mc-badge paid">Inscripción confirmada</span>'
+          + '<h2>Encuentro: Camino al corazón</h2>'
+          + '<p class="lead">Ya tenés tu lugar reservado. '+(waReady ? 'Entrá al grupo de WhatsApp para recibir la dirección exacta y las novedades del encuentro.' : 'Muy pronto te llega el link del grupo de WhatsApp con la dirección exacta del encuentro.')+'</p>'
+          + '<div class="mc-facts">'
+          + '<div class="mc-fact"><div class="k">Fecha</div><div class="v">Lunes 23 de noviembre</div></div>'
+          + '<div class="mc-fact"><div class="k">Horario</div><div class="v">10 a 16 h</div></div>'
+          + '<div class="mc-fact"><div class="k">Lugar</div><div class="v">Ingeniero Maschwitz</div></div>'
+          + '</div>'
+          + '<div class="mc-note"><span class="ic">🥗</span><div><strong>Almuerzo a la canasta.</strong> Traé algo para compartir.</div></div>'
+          + '<div class="mc-actions">'
+          + (waReady ? '<a class="mc-btn" href="'+WA_LINK+'" target="_blank" rel="noopener">Sumarme al grupo de WhatsApp</a>' : '')
+          + '<a class="mc-btn ghost" href="/camino-al-corazon">Ver el encuentro</a>'
           + '</div>'
           + '</div>';
       }
@@ -217,10 +237,13 @@
         if (isPerfumeRegistered) {
           html = getPerfumeCardHtml() + html;
         }
+        if (isCaminoRegistered) {
+          html = getCaminoCardHtml() + html;
+        }
 
         if (!html){
           cont.innerHTML = '<div class="mc-empty"><p>Todavía no estás inscripto a ningún curso.</p>'
-            + '<a class="mc-btn" href="/el-perfume-que-lleva-el-dolor">Ver el taller</a></div>';
+            + '<a class="mc-btn" href="/camino-al-corazon">Ver el próximo encuentro</a></div>';
           return;
         }
         cont.innerHTML = html;
@@ -228,12 +251,13 @@
 
       var isTallerRegistered = localStorage.getItem('as_taller_post_humanidad_registered') === 'true' || localStorage.getItem('as_taller_paid') === 'true';
       var isPerfumeRegistered = localStorage.getItem('as_taller_perfume_registered') === 'true';
+      var isCaminoRegistered = localStorage.getItem('as_camino_corazon_registered') === 'true';
 
       client.auth.getSession().then(function(res){
         var session = res.data && res.data.session;
         var user = session && session.user;
 
-        if (!user && !isTallerRegistered && !isPerfumeRegistered) {
+        if (!user && !isTallerRegistered && !isPerfumeRegistered && !isCaminoRegistered) {
           show('state-anon');
           return;
         }

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camino al corazón — Activismo Sagrado</title>
+<meta name="description" content="Una experiencia vivencial de apertura del corazón, movimiento y conexión ancestral andina con Catalina Heincke y Guillermo Colque Puppi. Lunes 23 de noviembre, 10 a 16 h, Ingeniero Maschwitz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="stylesheet" href="site.css">
+<script src="/analytics.js"></script>
+<style>
+  /* ===== page-specific: course landing (compartido con la-energia-del-dinero) ===== */
+  .course-hero{
+    padding: 32px 0 40px;
+    min-height: calc(100vh - 72px);
+    display:flex; flex-direction:column; justify-content:flex-start;
+    position:relative;
+  }
+  .course-hero .shell{ max-width: 880px; text-align:center; }
+  .course-hero h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size: clamp(40px, 5.6vw, 78px);
+    line-height:.96;
+    letter-spacing:-0.015em;
+    text-transform:uppercase;
+    margin: 14px 0 0;
+  }
+  .course-hero h1 em{
+    font-style:normal;
+    font-family:var(--font-script);
+    text-transform:none;
+    color: #FFE583;
+    font-weight:400;
+    display:inline-block;
+    transform: rotate(-3deg);
+    text-shadow: 0 4px 4px rgba(255,252,238,.22);
+  }
+  .course-hero .lede{
+    font-family:var(--font-script);
+    font-size: clamp(24px, 3vw, 36px);
+    color: var(--cream);
+    margin: 26px auto 0;
+    max-width: 30ch;
+    line-height:1.2;
+    text-shadow: 0 1px 0 rgba(0,0,0,.08);
+  }
+  .course-hero .intro{
+    font-size: 18px;
+    line-height:1.7;
+    opacity:.9;
+    max-width: 60ch;
+    margin: 24px auto 0;
+    text-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+  .course-hero .pull{
+    font-family:var(--font-script);
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height:1.25;
+    color: #FFE583;
+    max-width:46ch; margin:26px auto 0;
+    text-shadow: 0 4px 4px rgba(255,252,238,.22);
+  }
+  .course-hero .hero-actions{ justify-content:center; }
+
+  /* hero con flyer */
+  .course-hero .shell.hero-split{
+    max-width: 1120px; text-align:left;
+    display:grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap:56px; align-items:center;
+  }
+  .hero-split .eyebrow{ justify-content:flex-start; }
+  .hero-split .lede, .hero-split .intro, .hero-split .pull{ margin-left:0; margin-right:0; }
+  .hero-split .start-badge{ align-items:flex-start; margin-left:0; }
+  .hero-split .hero-actions{ justify-content:flex-start; }
+  .flyer{
+    margin:0; justify-self:center; width:100%; max-width:400px;
+    border-radius:22px; overflow:hidden;
+    border:1.5px solid rgba(255,252,238,.28);
+    box-shadow: 0 30px 70px -30px rgba(46,16,25,.65);
+    transform: rotate(1.5deg);
+  }
+  .flyer img{ display:block; width:100%; height:auto; }
+  @media (max-width: 900px){
+    .course-hero .shell.hero-split{ grid-template-columns:1fr; gap:36px; text-align:center; }
+    .hero-split .eyebrow{ justify-content:center; }
+    .hero-split .lede, .hero-split .intro, .hero-split .pull{ margin-left:auto; margin-right:auto; }
+    .hero-split .start-badge{ align-items:center; margin-left:auto; }
+    .hero-split .hero-actions{ justify-content:center; }
+    .flyer{ max-width:340px; transform:none; }
+  }
+
+  /* el método */
+  .metodo-steps{
+    display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center;
+    font-family:var(--font-display); font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; font-size:15px; margin-top:18px;
+  }
+  .metodo-steps .arr{ opacity:.6; }
+
+  .lienzo{
+    max-width:880px; margin:28px auto 0; text-align:center;
+    font-family:var(--font-script); font-size: clamp(20px, 2.4vw, 26px); line-height:1.35;
+    color:#FFE583; text-shadow: 0 4px 4px rgba(255,252,238,.22);
+  }
+  .start-badge{
+    display:inline-flex; flex-direction:column; align-items:center; gap:2px;
+    margin: 28px auto 4px;
+    color: var(--cream);
+    text-shadow: 0 1px 6px rgba(0,0,0,.3);
+  }
+  .start-badge .sb-label{
+    font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    opacity:.75;
+  }
+  .start-badge .sb-date{
+    font-family:var(--font-display); font-weight:800;
+    font-size: clamp(28px, 3.6vw, 40px); line-height:1; margin-top:2px;
+  }
+  .start-badge .sb-time{
+    font-size:14px; font-weight:600; letter-spacing:.04em; margin-top:6px; opacity:.9;
+  }
+
+  /* preguntas guía — banda breve */
+  .guia .band-grid{ align-items:center; }
+
+  /* contenido */
+  .modules{ padding: 100px 0; }
+  .modules .head{ text-align:center; margin-bottom: 56px; }
+  .modules h2{
+    font-family:var(--font-display); font-weight:700;
+    font-size: clamp(36px, 4.5vw, 60px);
+    text-transform:uppercase; letter-spacing:-0.01em; line-height:1;
+  }
+
+  /* logistics fact row */
+  .facts{
+    display:flex; flex-wrap:wrap; gap:0;
+    margin: 44px 0 0; border-top:1px solid var(--rule);
+  }
+  .facts div{ flex:1 1 180px; padding:22px 24px; border-left:1px solid var(--rule); }
+  .facts div:first-child{ border-left:none; padding-left:0; }
+  .facts .k{
+    font-family:var(--font-display); font-weight:600; font-size:11px;
+    letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-bottom:6px;
+  }
+  .facts .v{ font-family:var(--font-display); font-weight:700; font-size:22px; }
+
+  /* módulos — cards ricas */
+  .dynamics{ display:grid; gap:18px; max-width:880px; margin:56px auto 0; }
+  .dyn{
+    display:grid; grid-template-columns:66px 1fr; gap:26px; align-items:flex-start;
+    background: rgba(255,252,238,.07);
+    border:1px solid rgba(255,252,238,.16);
+    border-radius:20px;
+    padding:26px 32px;
+    backdrop-filter: blur(4px);
+    transition: transform .25s ease, background .25s ease, border-color .25s ease;
+  }
+  .dyn:hover{
+    transform: translateX(6px);
+    background: rgba(255,252,238,.12);
+    border-color: rgba(255,252,238,.32);
+  }
+  .dyn .ico{
+    width:66px; height:66px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(245,101,53,.16);
+    border:1.5px solid #F56535;
+    color:#F56535;
+  }
+  .dyn .ico svg{ width:32px; height:32px; }
+  .dyn .n{
+    font-family:var(--font-display); font-weight:600;
+    font-size:12px; letter-spacing:.2em; opacity:.55; margin-bottom:6px;
+  }
+  .dyn h3{
+    font-family:var(--font-display); font-weight:700; text-transform:uppercase;
+    font-size:19px; letter-spacing:.02em; margin-bottom:7px; color:#FFE583;
+    line-height:1.1;
+  }
+  .dyn p{ font-size:15.5px; line-height:1.65; opacity:.9; text-shadow:0 1px 4px rgba(0,0,0,.25); }
+  @media (max-width: 720px){
+    .dyn{ grid-template-columns:1fr; gap:16px; padding:24px; }
+  }
+
+  /* ===== Reservá tu lugar (inscripción sin cuenta) ===== */
+  .reservar{ padding: 100px 0 120px; }
+  .reservar .head{ text-align:center; margin-bottom: 48px; }
+  .reservar h2{
+    font-family:var(--font-display); font-weight:700;
+    font-size: clamp(36px, 4.5vw, 64px);
+    text-transform:uppercase; letter-spacing:-0.01em; line-height:1; margin-bottom:14px;
+  }
+  .reservar .sub{ font-family:var(--font-script); font-size:26px; color:#FFE583; }
+
+  .gift-card{
+    max-width: 520px; margin: 0 auto;
+    background: rgba(255,252,238,.10);
+    border: 1.5px solid rgba(255,252,238,.28);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    padding: 40px 36px;
+    box-shadow: 0 30px 70px -34px rgba(46,16,25,.55);
+  }
+  .gift-note{ font-size:14.5px; line-height:1.6; opacity:.9; margin:0 0 26px; text-align:center; }
+
+  .field{ margin-bottom:16px; text-align:left; }
+  .field label{ display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.75; margin-bottom:6px; }
+  .field input{
+    width:100%; box-sizing:border-box; padding:13px 15px;
+    background: rgba(255,252,238,.08);
+    border:1.5px solid rgba(255,252,238,.28);
+    border-radius:12px; color:var(--cream); font-size:15px;
+    outline:none; transition:border-color .2s, background .2s;
+    font-family:inherit;
+  }
+  .field input:focus{ border-color:#FFE583; background:rgba(255,252,238,.14); }
+  .field input::placeholder{ color:rgba(255,252,238,.4); }
+  .field .hint{ font-size:12.5px; opacity:.65; margin-top:6px; }
+
+  .submit{
+    width:100%; padding:16px; border:none; cursor:pointer; margin-top:8px;
+    background: var(--accent); color: var(--cream);
+    border-radius:999px;
+    font-family:var(--font-display); font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:13px;
+    transition: transform .2s, box-shadow .2s, opacity .2s;
+  }
+  .submit:hover{ transform:translateY(-2px); box-shadow:0 16px 34px -16px rgba(245,101,53,.7); }
+  .submit:disabled{ opacity:.55; cursor:default; transform:none; box-shadow:none; }
+
+  .msg{ margin-top:16px; padding:12px 14px; border-radius:12px; font-size:14px; line-height:1.4; display:none; text-align:left; }
+  .msg.show{ display:block; }
+  .msg.error{ background:rgba(204,80,39,.2); border:1px solid rgba(204,80,39,.55); }
+  .msg.ok{ background:rgba(120,170,120,.2); border:1px solid rgba(120,170,120,.55); }
+
+  .pay-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; box-sizing:border-box; padding:16px; border-radius:999px;
+    background:#FFE583; color:#2E1019; text-decoration:none;
+    font-family:var(--font-display); font-weight:800; letter-spacing:.06em;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .pay-btn:hover{ transform:translateY(-2px); box-shadow:0 16px 34px -16px rgba(255,229,131,.8); }
+
+  #reservar-checking, #reservar-ok{ text-align:center; }
+  #reservar-checking p, #reservar-ok p{ line-height:1.6; opacity:.92; }
+
+  .pay-note{ text-align:center; margin-top: 32px; font-size:14px; opacity:.75; }
+  .pay-note a{ color:#FFE583; }
+
+  @media (max-width: 720px){
+    .gift-card{ padding:32px 24px; }
+  }
+
+  /* ===== camino al corazón: precios por tier ===== */
+  .tiers{ display:grid; gap:12px; margin: 4px 0 18px; }
+  .tier{
+    position:relative; display:grid; grid-template-columns: 22px 1fr auto; gap:14px; align-items:start;
+    padding:16px 18px; border-radius:16px; cursor:pointer;
+    background: rgba(255,252,238,.06); border:1.5px solid rgba(255,252,238,.22);
+    transition: border-color .2s, background .2s;
+  }
+  .tier input{ position:absolute; opacity:0; pointer-events:none; }
+  .tier .dot{ width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,252,238,.5); margin-top:2px; }
+  .tier .t-name{ font-family:var(--font-display); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:14px; }
+  .tier .t-desc{ font-size:13.5px; line-height:1.5; opacity:.8; margin-top:4px; }
+  .tier .t-price{ font-family:var(--font-display); font-weight:800; font-size:22px; white-space:nowrap; }
+  .tier:has(input:checked){ border-color:#FFE583; background:rgba(255,252,238,.14); }
+  .tier:has(input:checked) .dot{ border-color:#FFE583; background: radial-gradient(circle, #FFE583 0 45%, transparent 50%); }
+  .tier:has(input:focus-visible){ outline:2px solid #FFE583; outline-offset:2px; }
+  @media (max-width: 560px){
+    .tier{ grid-template-columns: 22px 1fr; row-gap:6px; }
+    .tier .t-price{ grid-column:2; font-size:20px; }
+  }
+  .tiers-label{ display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.75; margin-bottom:8px; text-align:left; }
+
+  /* facilitadores */
+  .facis{ display:grid; grid-template-columns: 1fr 1fr; gap:28px; max-width:1040px; margin:48px auto 0; }
+  .faci{
+    background: rgba(255,252,238,.07); border:1px solid rgba(255,252,238,.16);
+    border-radius:22px; overflow:hidden;
+  }
+  .faci img{ display:block; width:100%; aspect-ratio: 4/3; object-fit:cover; }
+  .faci .body{ padding:26px 28px 30px; }
+  .faci .orig{ font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; opacity:.7; }
+  .faci h3{ font-family:var(--font-display); font-weight:700; text-transform:uppercase; font-size:22px; color:#FFE583; margin:6px 0 12px; line-height:1.1; }
+  .faci p{ font-size:15.5px; line-height:1.65; opacity:.9; margin:0 0 10px; }
+  @media (max-width: 820px){ .facis{ grid-template-columns:1fr; } }
+
+  .duo{ max-width:880px; margin:0 auto; border-radius:22px; overflow:hidden; border:1.5px solid rgba(255,252,238,.22); }
+  .duo img{ display:block; width:100%; height:auto; }
+
+  .gallery{ display:grid; grid-template-columns:1fr 1fr; gap:18px; max-width:880px; margin:40px auto 0; }
+  .gallery img{ display:block; width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:20px; }
+  @media (max-width: 560px){ .gallery{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body class="theme-sobria">
+
+  <!-- ========= NAV ========= -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="assets/905113d2-5017-4edc-8d6e-e16f390ff2d0.png" alt="AS" class="nav-logo">
+        <span class="wordmark">Activismo Sagrado</span>
+      </a>
+      <div class="nav-right">
+        <a href="#reservar" class="nav-cta">Reservar mi lugar</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========= HERO ========= -->
+  <section id="top" class="course-hero">
+    <div class="shell hero-split">
+      <div>
+        <div class="eyebrow">Activismo Sagrado presenta · encuentro presencial</div>
+        <h1>Camino al <em>corazón</em></h1>
+        <p class="lede">Un viaje para el alma.</p>
+        <p class="intro">
+          Una experiencia vivencial para volver al corazón y abrir nuevos espacios de conciencia.
+          Durante su visita a Buenos Aires, Catalina Heincke (Colombia) y Guillermo Colque Puppi
+          (Valles Calchaquíes, Salta) comparten una jornada de apertura del corazón, movimiento
+          y conexión ancestral andina.
+        </p>
+        <div class="start-badge">
+          <span class="sb-label">Encuentro</span>
+          <span class="sb-date">Lunes 23 de noviembre</span>
+          <span class="sb-time">10 a 16 h · Ingeniero Maschwitz</span>
+        </div>
+        <div class="hero-actions">
+          <a href="#reservar" class="btn btn-primary" id="hero-cta">Reservar mi lugar <span class="arrow">→</span></a>
+          <a href="#vivir" class="btn btn-ghost">Ver de qué se trata</a>
+        </div>
+      </div>
+      <figure class="flyer">
+        <img src="assets/camino-al-corazon.jpg" width="1000" height="1250"
+             alt="Flyer de Camino al corazón: ceremonia de cacao, conexión ancestral andina, Danza del Fénix, movimiento corporal y círculo de palabra. Lunes 23/11, 10 a 16 h, Ingeniero Maschwitz. Facilitan Cata y Guille, organiza Activismo Sagrado.">
+      </figure>
+    </div>
+  </section>
+
+  <!-- ========= RESERVÁ TU LUGAR ========= -->
+  <section id="reservar" class="reservar" style="padding: 50px 0 80px;">
+    <div class="shell">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">Inscripción · cupos limitados</div>
+        <h2>Reservá tu lugar</h2>
+        <div class="sub">elegí el valor que hoy te acompaña</div>
+      </div>
+
+      <div class="gift-card">
+
+        <!-- FORMULARIO -->
+        <div id="reservar-form-wrap">
+          <p class="gift-note">
+            Proponemos tres valores para que nadie quede afuera. Después de reservar, te
+            llega el link del grupo de WhatsApp del encuentro con la dirección exacta.
+          </p>
+          <form id="taller-form">
+            <div class="field">
+              <label for="t-name">Nombre y apellido</label>
+              <input type="text" id="t-name" autocomplete="name" placeholder="Tu nombre" required>
+            </div>
+            <div class="field">
+              <label for="t-email">Email</label>
+              <input type="email" id="t-email" autocomplete="email" placeholder="tu@email.com" required>
+            </div>
+            <div class="field">
+              <label for="t-phone">Celular (WhatsApp)</label>
+              <input type="tel" id="t-phone" autocomplete="tel" placeholder="Ej: 11 2345 6789" required>
+            </div>
+
+            <fieldset style="border:none; padding:0; margin:0;">
+              <legend class="tiers-label">Valor</legend>
+              <div class="tiers">
+                <label class="tier">
+                  <input type="radio" name="tier" value="sugerido" checked>
+                  <span class="dot"></span>
+                  <span><span class="t-name">Precio sugerido</span>
+                    <span class="t-desc" style="display:block;">El valor de referencia que proponemos para participar en la actividad.</span></span>
+                  <span class="t-price">$90.000</span>
+                </label>
+                <label class="tier">
+                  <input type="radio" name="tier" value="accesible">
+                  <span class="dot"></span>
+                  <span><span class="t-name">Precio accesible</span>
+                    <span class="t-desc" style="display:block;">Un valor reducido para que quienes hoy tienen dificultades para afrontar el precio sugerido también puedan participar.</span></span>
+                  <span class="t-price">$60.000</span>
+                </label>
+                <label class="tier">
+                  <input type="radio" name="tier" value="abundante">
+                  <span class="dot"></span>
+                  <span><span class="t-name">Precio abundante</span>
+                    <span class="t-desc" style="display:block;">Para quienes hoy pueden aportar un poco más y de esa forma ayudar a quienes necesitan tomar el precio accesible.</span></span>
+                  <span class="t-price">$120.000</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <button class="submit" id="reservar-submit" type="submit">Reservar mi lugar</button>
+          </form>
+          <div class="msg" id="taller-msg"></div>
+        </div>
+
+        <!-- VERIFICANDO PAGO -->
+        <div id="reservar-checking" style="display:none;">
+          <p><strong>Un momento…</strong><br>Estamos confirmando tu pago con Mercado Pago. No cierres esta pantalla.</p>
+        </div>
+
+        <!-- CONFIRMADO -->
+        <div id="reservar-ok" style="display:none;">
+          <p style="font-family:var(--font-script); font-size:26px; color:#FFE583; margin:0 0 8px;">¡Reserva confirmada! 🎉</p>
+          <p style="margin:0 0 24px;">Tu lugar en <b>Camino al corazón</b> está reservado para el lunes 23 de noviembre, de 10 a 16 h, en Ingeniero Maschwitz. Acordate de traer algo para compartir en el almuerzo a la canasta.</p>
+          <a class="pay-btn" id="wa-link" href="#" target="_blank" rel="noopener" style="display:none;">Sumarme al grupo de WhatsApp</a>
+          <p id="wa-pending-note" style="display:none; font-size:14px; opacity:.8; margin-top:6px;">Muy pronto vas a recibir el link del grupo de WhatsApp con la dirección exacta.</p>
+        </div>
+
+      </div>
+
+      <p class="pay-note">
+        El pago se procesa de forma segura en Mercado Pago.
+        ¿Dudas? <a href="https://chat.whatsapp.com/CZdbRKFK3M5J4nZg0qde25?mode=gi_t" target="_blank" rel="noopener">Escribinos</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========= LA VISITA ========= -->
+  <section id="invitacion" class="band teal guia">
+    <div class="shell">
+      <div class="section-label deep" style="opacity:.9;">La visita</div>
+      <div class="band-grid">
+        <div>
+          <h2>Dos caminos que se <em>encuentran</em></h2>
+        </div>
+        <div class="band-body">
+          <p class="accent" style="margin-top:0;">
+            Desde recorridos y lugares de origen distintos —Colombia y los Valles Calchaquíes
+            de Salta—, Cata y Guille comparten sus prácticas y saberes en una jornada para
+            sentir, escuchar y reconectar.
+          </p>
+          <div class="metodo-steps" aria-label="La jornada">
+            <span>Cuerpo</span><span class="arr">·</span><span>Movimiento</span><span class="arr">·</span><span>Escucha</span><span class="arr">·</span><span>Encuentro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= QUÉ VAMOS A VIVIR ========= -->
+  <section id="vivir" class="modules">
+    <div class="shell">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">La experiencia</div>
+        <h2>Qué vamos a vivir</h2>
+      </div>
+
+      <p class="intro" style="font-size:18px; line-height:1.7; opacity:.9; max-width:60ch; margin:0 auto; text-align:center;">
+        Camino al corazón es una experiencia vivencial que enlaza movimiento, meditación,
+        cantos ancestrales y conexión con la sabiduría de la cosmovisión andina. En su visita
+        a Buenos Aires, Cata y Guille integran sus caminos en una experiencia conjunta para
+        abrir el corazón, escuchar y reconectar.
+      </p>
+
+      <div class="facts">
+        <div><div class="k">Fecha</div><div class="v">Lunes 23 de noviembre</div></div>
+        <div><div class="k">Horario</div><div class="v">10 a 16 h</div></div>
+        <div><div class="k">Lugar</div><div class="v">Ingeniero Maschwitz</div></div>
+        <div><div class="k">Almuerzo</div><div class="v">A la canasta</div></div>
+      </div>
+
+      <div class="dynamics">
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4c5 4 7 8 7 12s-2 8-7 12c-5-4-7-8-7-12s2-8 7-12Z"/><path d="M16 6v20M12 11l4 3 4-3M12 17l4 3 4-3"/></svg>
+          </div>
+          <div>
+            <div class="n">01</div>
+            <h3>Ceremonia de cacao</h3>
+            <p>Abrimos la jornada con la medicina del cacao, para entrar en el encuentro desde el corazón.</p>
+          </div>
+        </div>
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 28c-4.4 0-8-3.4-8-7.6C8 14 16 4 16 4s8 10 8 16.4c0 4.2-3.6 7.6-8 7.6Z"/><path d="M16 24c-2 0-3.5-1.5-3.5-3.4 0-2.6 3.5-6.6 3.5-6.6"/></svg>
+          </div>
+          <div>
+            <div class="n">02</div>
+            <h3>Limpieza y armonización energética</h3>
+            <p>Un momento para soltar lo que traemos, limpiar y armonizar nuestra energía.</p>
+          </div>
+        </div>
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="6" r="2.6"/><path d="M6 12l10 2 10-2M16 14v6l-5 8M16 20l5 8"/></svg>
+          </div>
+          <div>
+            <div class="n">03</div>
+            <h3>Movimiento y Danza del Fénix</h3>
+            <p>Catalina nos invita a recorrer el cuerpo a través del movimiento, la danza y la expresión, abriendo espacios para sentir, liberar y reconectar con nuestra propia energía.</p>
+          </div>
+        </div>
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22V8l14-3v14"/><circle cx="7.5" cy="22" r="2.5"/><circle cx="21.5" cy="19" r="2.5"/></svg>
+          </div>
+          <div>
+            <div class="n">04</div>
+            <h3>Cantos ancestrales</h3>
+            <p>Guillermo comparte cantos, sonidos y prácticas vinculadas con la memoria ancestral andina, la Madre Tierra y la cosmovisión de los Valles Calchaquíes.</p>
+          </div>
+        </div>
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="7" r="3"/><path d="M16 11v7M8 26c2-4 5-6 8-6s6 2 8 6M6 18l10-2 10 2"/></svg>
+          </div>
+          <div>
+            <div class="n">05</div>
+            <h3>Meditación y círculo de palabra</h3>
+            <p>Espacios para escuchar hacia adentro, compartir lo que aparece y darle lugar a nuevas preguntas.</p>
+          </div>
+        </div>
+        <div class="dyn">
+          <div class="ico" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="5"/><path d="M16 3v4M16 25v4M3 16h4M25 16h4M6.8 6.8l2.8 2.8M22.4 22.4l2.8 2.8M6.8 25.2l2.8-2.8M22.4 9.6l2.8-2.8"/></svg>
+          </div>
+          <div>
+            <div class="n">06</div>
+            <h3>Conexión ancestral andina</h3>
+            <p>Prácticas vinculadas con la sabiduría de la cosmovisión andina, desde el recorrido de Guillermo y su vínculo con el territorio.</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="duo" style="margin-top:40px;">
+        <img src="assets/cac-espacio.jpg" alt="Experiencia grupal de movimiento en un espacio circular de madera" loading="lazy" style="aspect-ratio:16/10; object-fit:cover; object-position:50% 60%;">
+      </figure>
+
+      <p class="lienzo">La invitación es participar, sentir y darle lugar a nuevas preguntas.</p>
+    </div>
+  </section>
+
+  <!-- ========= FACILITADORES ========= -->
+  <section id="facilitadores" class="modules" style="padding-top:20px;">
+    <div class="shell">
+      <div class="head">
+        <div class="section-label deep" style="margin-bottom:14px;">Facilitan</div>
+        <h2>Cata y Guille</h2>
+      </div>
+
+      <figure class="duo" style="margin-top:0;">
+        <img src="assets/cac-cata-y-guille.jpg" width="1000" height="750" alt="Catalina Heincke y Guillermo Colque Puppi" loading="lazy" style="aspect-ratio:16/10; object-fit:cover; object-position:50% 40%;">
+      </figure>
+
+      <div class="facis">
+        <div class="faci">
+          <img src="assets/cac-danza.jpg" alt="Catalina Heincke guiando una práctica de danza y movimiento" loading="lazy" style="object-position: 50% 58%;">
+          <div class="body">
+            <div class="orig">Colombia</div>
+            <h3>Catalina “Cata” Heincke</h3>
+            <p>Cata nos invita a recorrer el cuerpo a través del movimiento, la danza y la expresión, abriendo espacios para sentir, liberar y reconectar con nuestra propia energía.</p>
+          </div>
+        </div>
+        <div class="faci">
+          <img src="assets/cac-guille.jpg" alt="Guillermo Colque Puppi" loading="lazy" style="object-position: 50% 30%;">
+          <div class="body">
+            <div class="orig">Valles Calchaquíes, Salta</div>
+            <h3>Guillermo Colque Puppi</h3>
+            <p>Guía de conexión y conciencia ancestral andina. Desde Finca Potrero de Payogasta, en los Valles Calchaquíes de Salta, desarrolla una tarea de conexión con la sabiduría ancestral andina, la naturaleza y la memoria espiritual de los territorios sagrados.</p>
+            <p>A través de encuentros, sesiones, retiros y viajes de conexión, acompaña procesos de apertura del corazón, expansión de la conciencia y reconexión con la propia esencia. Su trabajo integra cantos ancestrales, sonidos, frecuencias, activación de Discos Solares y experiencias de conexión con la Madre Tierra y la cosmovisión andina.</p>
+            <p>Hoy comparte este camino junto a Catalina Heincke, integrando sus dones y talentos en experiencias de unión sagrada, conciencia y conexión con el corazón.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-actions" style="justify-content:center; margin-top:48px;">
+        <a href="#reservar" class="btn btn-primary">Reservar mi lugar <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= FOOTER ========= -->
+  <footer>
+    <div class="shell">
+      <div class="footer-bottom" style="border-top:none; padding-top:0;">
+        <span>© 2026 · Activismo Sagrado · Movimiento independiente.</span>
+        <span style="font-family:var(--font-script); font-size:18px;">somos amor · en acción</span>
+      </div>
+    </div>
+  </footer>
+  <script>
+  (function(){
+    var WORKSHOP = 'camino-al-corazon';
+    var REGISTERED_KEY = 'as_camino_corazon_registered';
+    var WA_LINK = 'PONER_AQUI_LINK_GRUPO_WA';
+
+    var $ = function(id){ return document.getElementById(id); };
+    var form = $('taller-form');
+    var msg = $('taller-msg');
+    function showMsg(text, type){ msg.textContent = text; msg.className = 'msg show ' + type; }
+
+    function revealWa(){
+      var waConfigured = WA_LINK && WA_LINK.indexOf('PONER_AQUI') === -1;
+      if (waConfigured){
+        var a = $('wa-link');
+        a.href = WA_LINK;
+        a.style.display = 'inline-flex';
+      } else {
+        $('wa-pending-note').style.display = '';
+      }
+    }
+
+    function setupRegisteredState(){
+      var navCta = document.querySelector('.nav-cta');
+      if (navCta) {
+        navCta.href = '/mis-cursos';
+        navCta.textContent = 'Mis cursos';
+        navCta.onclick = function(e){
+          e.preventDefault();
+          window.location.href = '/mis-cursos';
+        };
+      }
+
+      var heroCta = $('hero-cta');
+      if (heroCta) {
+        heroCta.href = '/mis-cursos';
+        heroCta.innerHTML = 'Ir a Mis cursos <span class="arrow">→</span>';
+        heroCta.onclick = function(e){
+          e.preventDefault();
+          window.location.href = '/mis-cursos';
+        };
+      }
+
+      var ctaBtns = document.querySelectorAll('a[href="#reservar"]');
+      ctaBtns.forEach(function(btn){
+        btn.href = '/mis-cursos';
+        btn.textContent = 'Mis cursos';
+        btn.onclick = function(e){
+          e.preventDefault();
+          window.location.href = '/mis-cursos';
+        };
+      });
+
+      if ($('reservar-form-wrap')) $('reservar-form-wrap').style.display = 'none';
+      if ($('reservar-checking')) $('reservar-checking').style.display = 'none';
+      if ($('reservar-ok')) {
+        $('reservar-ok').style.display = 'block';
+        revealWa();
+      }
+    }
+
+    var isRegistered = false;
+    try { isRegistered = localStorage.getItem(REGISTERED_KEY) === 'true'; } catch(e){}
+    if (isRegistered) {
+      setupRegisteredState();
+    }
+
+    var params = new URLSearchParams(location.search);
+    var paymentId = params.get('payment_id') || params.get('collection_id');
+
+    if (paymentId) {
+      $('reservar-form-wrap').style.display = 'none';
+      $('reservar-checking').style.display = 'block';
+      fetch('/api/taller-verify-payment?payment_id=' + encodeURIComponent(paymentId))
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          $('reservar-checking').style.display = 'none';
+          if (res && res.paid) {
+            try { localStorage.setItem(REGISTERED_KEY, 'true'); } catch(e){}
+            setupRegisteredState();
+            if (window.asTrack) asTrack('purchase', { items: [WORKSHOP] });
+          } else {
+            $('reservar-form-wrap').style.display = '';
+            showMsg('Todavía no vemos la confirmación de tu pago. Si ya pagaste, esperá un momento y actualizá la página.', 'error');
+          }
+        })
+        .catch(function(){
+          $('reservar-checking').style.display = 'none';
+          $('reservar-form-wrap').style.display = '';
+        });
+    }
+
+    if (form) {
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var btn = $('reservar-submit');
+        var prev = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Generando tu inscripción…';
+        if (window.asTrack) asTrack('begin_checkout', { workshop: WORKSHOP });
+        try {
+          var resp = await fetch('/api/taller-signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: $('t-name').value.trim(),
+              email: $('t-email').value.trim(),
+              phone: $('t-phone').value.trim(),
+              tier: (form.querySelector('input[name="tier"]:checked') || {}).value,
+              workshop: WORKSHOP
+            })
+          });
+          var data = await resp.json();
+          if (resp.ok && data && data.init_point) {
+            window.location.href = data.init_point;
+          } else {
+            btn.disabled = false; btn.textContent = prev;
+            showMsg((data && data.error) || 'No pudimos procesar la inscripción. Probá de nuevo.', 'error');
+          }
+        } catch (err) {
+          btn.disabled = false; btn.textContent = prev;
+          showMsg('No pudimos conectar con el servidor. Probá de nuevo en un momento.', 'error');
+        }
+      });
+    }
+
+    if (window.asTrack) asTrack('view_course_landing', { course: WORKSHOP });
+  })();
+  </script>
+</body></html>
