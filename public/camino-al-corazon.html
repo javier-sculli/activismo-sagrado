@@ -685,6 +685,16 @@
         });
     }
 
+    // Precio de prueba oculto: /camino-al-corazon?prueba=<código> suma una opción de $1.000.
+    var TEST_CODE = new URLSearchParams(location.search).get('prueba') || '';
+    if (TEST_CODE && form) {
+      var tiersBox = form.querySelector('.tiers');
+      if (tiersBox) tiersBox.insertAdjacentHTML('beforeend',
+        '<label class="tier"><input type="radio" name="tier" value="prueba"><span class="dot"></span>' +
+        '<span><span class="t-name">Prueba interna</span><span class="t-desc" style="display:block;">Solo para testear el pago.</span></span>' +
+        '<span class="t-price">$1.000</span></label>');
+    }
+
     if (form) {
       form.addEventListener('submit', async function(e){
         e.preventDefault();
@@ -702,6 +712,7 @@
               email: $('t-email').value.trim(),
               phone: $('t-phone').value.trim(),
               tier: (form.querySelector('input[name="tier"]:checked') || {}).value,
+              code: TEST_CODE || undefined,
               workshop: WORKSHOP
             })
           });

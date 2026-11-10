@@ -49,6 +49,11 @@ const TALLERES = {
 };
 const TALLER_SLUG_DEFAULT = 'taller-ia-la-post-humanidad';
 const TALLER_MIN_APORTE = 1000;
+// Precio de prueba oculto para testear el circuito de pago real. Solo se acepta si
+// el request trae el código secreto (env TEST_TIER_CODE). $1.000 es el mínimo que
+// admite la columna taller_signups.aporte (check aporte >= 1000).
+const TEST_TIER_CODE = process.env.TEST_TIER_CODE || '';
+const TEST_TIER_MONTO = 1000;
 const TALLER_MAX_APORTE = 2000000; // tope de sanidad ante errores de tipeo, no un límite de negocio
 
 // Mapa monto -> plan, como último recurso si no viene plan explícito.
@@ -314,7 +319,7 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
   if (!supabase) return res.status(500).json({ error: 'sin supabase' });
   if (!MP_ACCESS_TOKEN) return res.status(500).json({ error: 'MP no configurado' });
 
-  const { name, email, phone, aporte, tier, workshop } = req.body || {};
+  const { name, email, phone, aporte, tier, workshop, code } = req.body || {};
   const slug = workshop || TALLER_SLUG_DEFAULT;
   const taller = TALLERES[slug];
   if (!taller) return res.status(400).json({ error: 'Taller inválido.' });
@@ -322,7 +327,8 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
   const cleanEmail = (email || '').toString().trim().toLowerCase();
   const cleanPhone = (phone || '').toString().trim();
   // Si el taller tiene precios fijos, el monto lo decide el server según el tier elegido.
-  const monto = taller.precios ? taller.precios[tier] : Math.round(Number(aporte));
+  const esPrueba = tier === 'prueba' && TEST_TIER_CODE && code === TEST_TIER_CODE;
+  const monto = esPrueba ? TEST_TIER_MONTO : taller.precios ? taller.precios[tier] : Math.round(Number(aporte));
   if (taller.precios && !monto) return res.status(400).json({ error: 'Elegí uno de los valores.' });
 
   if (!cleanName) return res.status(400).json({ error: 'Falta el nombre.' });
