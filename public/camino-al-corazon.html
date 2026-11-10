@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Camino al corazón — Activismo Sagrado</title>
-<meta name="description" content="Una experiencia vivencial de apertura del corazón, movimiento y conexión ancestral andina con Catalina Heincke y Guillermo Colque Puppi. Lunes 23 de noviembre, 10 a 16 h, Ingeniero Maschwitz.">
+<meta name="description" content="Una experiencia vivencial de apertura del corazón, movimiento y conexión ancestral andina con Catalina Heincke y Guillermo Colque Puppi. Lunes 23 de noviembre, 10 a 16 h, Espacio Arminda (Ingeniero Maschwitz).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link rel="stylesheet" href="site.css">
@@ -261,18 +261,21 @@
     transition: border-color .2s, background .2s;
   }
   .tier input{ position:absolute; opacity:0; pointer-events:none; }
-  .tier .dot{ width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,252,238,.5); margin-top:2px; }
-  .tier .t-name{ font-family:var(--font-display); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:14px; }
-  .tier .t-desc{ font-size:13.5px; line-height:1.5; opacity:.8; margin-top:4px; }
-  .tier .t-price{ font-family:var(--font-display); font-weight:800; font-size:22px; white-space:nowrap; }
-  .tier:has(input:checked){ border-color:#FFE583; background:rgba(255,252,238,.14); }
+  .tier{ background: rgba(46,16,25,.55); border-color: rgba(255,252,238,.18); color:#FFFCEE; }
+  .tier:hover{ background: rgba(46,16,25,.65); }
+  .tier .dot{ width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,252,238,.7); margin-top:2px; }
+  .tier .t-name{ font-family:var(--font-display); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:14px; color:#FFFCEE; }
+  .tier .t-desc{ font-size:13.5px; line-height:1.5; color:rgba(255,252,238,.88); margin-top:4px; }
+  .tier .t-price{ font-family:var(--font-display); font-weight:800; font-size:22px; white-space:nowrap; color:#FFFCEE; }
+  .tier:has(input:checked){ border-color:#FFE583; background:rgba(46,16,25,.82); box-shadow: 0 0 0 1px #FFE583 inset; }
+  .tier:has(input:checked) .t-price, .tier:has(input:checked) .t-name{ color:#FFE583; }
   .tier:has(input:checked) .dot{ border-color:#FFE583; background: radial-gradient(circle, #FFE583 0 45%, transparent 50%); }
   .tier:has(input:focus-visible){ outline:2px solid #FFE583; outline-offset:2px; }
   @media (max-width: 560px){
     .tier{ grid-template-columns: 22px 1fr; row-gap:6px; }
     .tier .t-price{ grid-column:2; font-size:20px; }
   }
-  .tiers-label{ display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.75; margin-bottom:8px; text-align:left; }
+  .tiers-label{ display:block; width:100%; font-family:var(--font-display); font-weight:800; font-size:20px; letter-spacing:.06em; text-transform:uppercase; color:#FFFCEE; margin:14px 0 12px; text-align:center; text-shadow:0 1px 6px rgba(0,0,0,.25); }
 
   /* facilitadores */
   .facis{ display:grid; grid-template-columns: 1fr 1fr; gap:28px; max-width:1040px; margin:48px auto 0; }
@@ -289,6 +292,8 @@
 
   .duo{ max-width:880px; margin:0 auto; border-radius:22px; overflow:hidden; border:1.5px solid rgba(255,252,238,.22); }
   .duo img{ display:block; width:100%; height:auto; }
+  .duo figcaption{ padding:16px 22px; text-align:center; font-family:var(--font-display); font-weight:600; font-size:16px; letter-spacing:.04em; background:rgba(46,16,25,.55); color:#FFFCEE; }
+  .duo figcaption strong{ color:#FFE583; text-transform:uppercase; letter-spacing:.08em; }
 
   .gallery{ display:grid; grid-template-columns:1fr 1fr; gap:18px; max-width:880px; margin:40px auto 0; }
   .gallery img{ display:block; width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:20px; }
@@ -326,7 +331,7 @@
         <div class="start-badge">
           <span class="sb-label">Encuentro</span>
           <span class="sb-date">Lunes 23 de noviembre</span>
-          <span class="sb-time">10 a 16 h · Ingeniero Maschwitz</span>
+          <span class="sb-time">10 a 16 h · Espacio Arminda (Maschwitz)</span>
         </div>
         <div class="hero-actions">
           <a href="#reservar" class="btn btn-primary" id="hero-cta">Reservar mi lugar <span class="arrow">→</span></a>
@@ -372,8 +377,15 @@
             </div>
 
             <fieldset style="border:none; padding:0; margin:0;">
-              <legend class="tiers-label">Valor</legend>
+              <legend class="tiers-label">Elegí tu opción</legend>
               <div class="tiers">
+                <label class="tier">
+                  <input type="radio" name="tier" value="abundante">
+                  <span class="dot"></span>
+                  <span><span class="t-name">Precio abundante</span>
+                    <span class="t-desc" style="display:block;">Para quienes hoy pueden aportar un poco más y de esa forma ayudar a quienes necesitan tomar el precio accesible.</span></span>
+                  <span class="t-price">$120.000</span>
+                </label>
                 <label class="tier">
                   <input type="radio" name="tier" value="sugerido" checked>
                   <span class="dot"></span>
@@ -387,13 +399,6 @@
                   <span><span class="t-name">Precio accesible</span>
                     <span class="t-desc" style="display:block;">Un valor reducido para que quienes hoy tienen dificultades para afrontar el precio sugerido también puedan participar.</span></span>
                   <span class="t-price">$60.000</span>
-                </label>
-                <label class="tier">
-                  <input type="radio" name="tier" value="abundante">
-                  <span class="dot"></span>
-                  <span><span class="t-name">Precio abundante</span>
-                    <span class="t-desc" style="display:block;">Para quienes hoy pueden aportar un poco más y de esa forma ayudar a quienes necesitan tomar el precio accesible.</span></span>
-                  <span class="t-price">$120.000</span>
                 </label>
               </div>
             </fieldset>
@@ -411,7 +416,7 @@
         <!-- CONFIRMADO -->
         <div id="reservar-ok" style="display:none;">
           <p style="font-family:var(--font-script); font-size:26px; color:#FFE583; margin:0 0 8px;">¡Reserva confirmada! 🎉</p>
-          <p style="margin:0 0 24px;">Tu lugar en <b>Camino al corazón</b> está reservado para el lunes 23 de noviembre, de 10 a 16 h, en Ingeniero Maschwitz. Acordate de traer algo para compartir en el almuerzo a la canasta.</p>
+          <p style="margin:0 0 24px;">Tu lugar en <b>Camino al corazón</b> está reservado para el lunes 23 de noviembre, de 10 a 16 h, en Espacio Arminda (Maschwitz). Acordate de traer algo para compartir en el almuerzo a la canasta.</p>
           <a class="pay-btn" id="wa-link" href="#" target="_blank" rel="noopener" style="display:none;">Sumarme al grupo de WhatsApp</a>
           <p id="wa-pending-note" style="display:none; font-size:14px; opacity:.8; margin-top:6px;">Muy pronto vas a recibir el link del grupo de WhatsApp con la dirección exacta.</p>
         </div>
@@ -432,6 +437,9 @@
       <div class="band-grid">
         <div>
           <h2>Dos caminos que se <em>encuentran</em></h2>
+          <figure class="duo" style="margin:28px 0 0;">
+            <img src="assets/cac-cata-y-guille.jpg" width="1000" height="750" alt="Catalina Heincke y Guillermo Colque Puppi" loading="lazy" style="aspect-ratio:4/3; object-fit:cover; object-position:50% 40%;">
+          </figure>
         </div>
         <div class="band-body">
           <p class="accent" style="margin-top:0;">
@@ -465,7 +473,7 @@
       <div class="facts">
         <div><div class="k">Fecha</div><div class="v">Lunes 23 de noviembre</div></div>
         <div><div class="k">Horario</div><div class="v">10 a 16 h</div></div>
-        <div><div class="k">Lugar</div><div class="v">Ingeniero Maschwitz</div></div>
+        <div><div class="k">Lugar</div><div class="v">Espacio Arminda (Maschwitz)</div></div>
         <div><div class="k">Almuerzo</div><div class="v">A la canasta</div></div>
       </div>
 
@@ -532,8 +540,9 @@
         </div>
       </div>
 
-      <figure class="duo" style="margin-top:40px;">
-        <img src="assets/cac-espacio.jpg" alt="Experiencia grupal de movimiento en un espacio circular de madera" loading="lazy" style="aspect-ratio:16/10; object-fit:cover; object-position:50% 60%;">
+      <figure class="duo lugar" style="margin-top:40px;">
+        <img src="assets/cac-espacio-arminda.jpg" alt="El salón de Espacio Arminda: madera, plantas colgantes, una ventana circular al jardín e instrumentos" loading="lazy" style="aspect-ratio:4/3; object-fit:cover; object-position:50% 55%;">
+        <figcaption>El encuentro es en <strong>Espacio Arminda</strong> (Maschwitz)</figcaption>
       </figure>
 
       <p class="lienzo">La invitación es participar, sentir y darle lugar a nuevas preguntas.</p>
@@ -547,10 +556,6 @@
         <div class="section-label deep" style="margin-bottom:14px;">Facilitan</div>
         <h2>Cata y Guille</h2>
       </div>
-
-      <figure class="duo" style="margin-top:0;">
-        <img src="assets/cac-cata-y-guille.jpg" width="1000" height="750" alt="Catalina Heincke y Guillermo Colque Puppi" loading="lazy" style="aspect-ratio:16/10; object-fit:cover; object-position:50% 40%;">
-      </figure>
 
       <div class="facis">
         <div class="faci">
