@@ -337,7 +337,10 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
     .insert({ workshop: slug, full_name: cleanName, email: cleanEmail, phone: cleanPhone, aporte: monto, status: 'pending' })
     .select()
     .single();
-  if (insErr) return res.status(500).json({ error: insErr.message });
+  if (insErr) {
+    console.warn('[taller-signup] supabase insert error', slug, insErr.message);
+    return res.status(500).json({ error: insErr.message });
+  }
 
   const origin = (req.get('origin') || `https://${req.get('host')}`).replace(/\/$/, '');
   const back = `${origin}/${slug}?signup_id=${inserted.id}`;
