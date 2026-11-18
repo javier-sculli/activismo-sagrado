@@ -45,6 +45,7 @@ const TALLERES = {
   'camino-al-corazon': {
     titulo: 'Camino al corazón',
     precios: { accesible: 60000, sugerido: 90000, abundante: 120000 },
+    agotado: true, // cupos completos: no se aceptan más inscripciones
   },
 };
 const TALLER_SLUG_DEFAULT = 'taller-ia-la-post-humanidad';
@@ -323,6 +324,7 @@ app.post('/api/taller-signup', express.json(), async (req, res) => {
   const slug = workshop || TALLER_SLUG_DEFAULT;
   const taller = TALLERES[slug];
   if (!taller) return res.status(400).json({ error: 'Taller inválido.' });
+  if (taller.agotado) return res.status(409).json({ error: 'Cupos agotados: ya no quedan lugares para este encuentro.' });
   const cleanName = (name || '').toString().trim();
   const cleanEmail = (email || '').toString().trim().toLowerCase();
   const cleanPhone = (phone || '').toString().trim();

@@ -252,6 +252,10 @@
     .gift-card{ padding:32px 24px; }
   }
 
+  /* ===== cupos agotados: botones deshabilitados ===== */
+  .is-agotado{ opacity:.6; cursor:not-allowed; pointer-events:none; filter:grayscale(.4); }
+  .is-agotado:hover{ transform:none; box-shadow:none; }
+
   /* ===== camino al corazón: precios por tier ===== */
   .tiers{ display:grid; gap:12px; margin: 4px 0 18px; }
   .tier{
@@ -310,7 +314,7 @@
         <span class="wordmark">Activismo Sagrado</span>
       </a>
       <div class="nav-right">
-        <a href="#reservar" class="nav-cta">Reservar mi lugar</a>
+        <a href="#reservar" class="nav-cta is-agotado" aria-disabled="true">Cupos agotados</a>
       </div>
     </div>
   </nav>
@@ -334,7 +338,7 @@
           <span class="sb-time">10 a 16 h · Espacio Arminda (Maschwitz)</span>
         </div>
         <div class="hero-actions">
-          <a href="#reservar" class="btn btn-primary" id="hero-cta">Reservar mi lugar <span class="arrow">→</span></a>
+          <a href="#reservar" class="btn btn-primary is-agotado" id="hero-cta" aria-disabled="true">Cupos agotados</a>
           <a href="#vivir" class="btn btn-ghost">Ver de qué se trata</a>
         </div>
       </div>
@@ -349,15 +353,21 @@
   <section id="reservar" class="reservar" style="padding: 50px 0 80px;">
     <div class="shell">
       <div class="head">
-        <div class="section-label deep" style="margin-bottom:14px;">Inscripción · cupos limitados</div>
-        <h2>Reservá tu lugar</h2>
-        <div class="sub">elegí el valor que hoy te acompaña</div>
+        <div class="section-label deep" style="margin-bottom:14px;">Inscripción · cupos agotados</div>
+        <h2>Cupos agotados</h2>
+        <div class="sub">gracias por tanto amor</div>
       </div>
 
       <div class="gift-card">
 
-        <!-- FORMULARIO -->
-        <div id="reservar-form-wrap">
+        <!-- AGOTADO -->
+        <div id="reservar-agotado" style="text-align:center;">
+          <p style="font-family:var(--font-script); font-size:26px; color:#FFE583; margin:0 0 8px;">¡Cupos agotados!</p>
+          <p style="margin:0; line-height:1.6; opacity:.92;">Se completaron todos los lugares para <b>Camino al corazón</b>. Gracias a cada persona que se sumó. Muy pronto compartimos los próximos encuentros.</p>
+        </div>
+
+        <!-- FORMULARIO (cerrado: cupos agotados) -->
+        <div id="reservar-form-wrap" style="display:none;">
           <p class="gift-note">
             Proponemos tres valores para que nadie quede afuera. Después de reservar, te
             llega el link del grupo de WhatsApp del encuentro con la dirección exacta.
@@ -405,8 +415,8 @@
 
             <button class="submit" id="reservar-submit" type="submit">Reservar mi lugar</button>
           </form>
-          <div class="msg" id="taller-msg"></div>
         </div>
+        <div class="msg" id="taller-msg"></div>
 
         <!-- VERIFICANDO PAGO -->
         <div id="reservar-checking" style="display:none;">
@@ -579,7 +589,7 @@
       </div>
 
       <div class="hero-actions" style="justify-content:center; margin-top:48px;">
-        <a href="#reservar" class="btn btn-primary">Reservar mi lugar <span class="arrow">→</span></a>
+        <a href="#reservar" class="btn btn-primary is-agotado" aria-disabled="true">Cupos agotados</a>
       </div>
     </div>
   </section>
@@ -598,6 +608,7 @@
     var WORKSHOP = 'camino-al-corazon';
     var REGISTERED_KEY = 'as_camino_corazon_registered';
     var WA_LINK = 'https://chat.whatsapp.com/JvRACtFICaT7PHTlkL7xzd';
+    var AGOTADO = true; // cupos completos: el formulario queda cerrado
 
     var $ = function(id){ return document.getElementById(id); };
     var form = $('taller-form');
@@ -618,6 +629,7 @@
     function setupRegisteredState(){
       var navCta = document.querySelector('.nav-cta');
       if (navCta) {
+        quitarAgotado(navCta);
         navCta.href = '/mis-cursos';
         navCta.textContent = 'Mis cursos';
         navCta.onclick = function(e){
@@ -628,6 +640,7 @@
 
       var heroCta = $('hero-cta');
       if (heroCta) {
+        quitarAgotado(heroCta);
         heroCta.href = '/mis-cursos';
         heroCta.innerHTML = 'Ir a Mis cursos <span class="arrow">→</span>';
         heroCta.onclick = function(e){
@@ -638,6 +651,7 @@
 
       var ctaBtns = document.querySelectorAll('a[href="#reservar"]');
       ctaBtns.forEach(function(btn){
+        quitarAgotado(btn);
         btn.href = '/mis-cursos';
         btn.textContent = 'Mis cursos';
         btn.onclick = function(e){
@@ -647,12 +661,16 @@
       });
 
       if ($('reservar-form-wrap')) $('reservar-form-wrap').style.display = 'none';
+      if ($('reservar-agotado')) $('reservar-agotado').style.display = 'none';
       if ($('reservar-checking')) $('reservar-checking').style.display = 'none';
       if ($('reservar-ok')) {
         $('reservar-ok').style.display = 'block';
         revealWa();
       }
     }
+
+    // El link de "Mis cursos" sí tiene que ser clickeable para quien ya reservó.
+    function quitarAgotado(el){ el.classList.remove('is-agotado'); el.removeAttribute('aria-disabled'); }
 
     var isRegistered = false;
     try { isRegistered = localStorage.getItem(REGISTERED_KEY) === 'true'; } catch(e){}
@@ -665,6 +683,7 @@
 
     if (paymentId) {
       $('reservar-form-wrap').style.display = 'none';
+      $('reservar-agotado').style.display = 'none';
       $('reservar-checking').style.display = 'block';
       fetch('/api/taller-verify-payment?payment_id=' + encodeURIComponent(paymentId))
         .then(function(r){ return r.json(); })
@@ -675,13 +694,15 @@
             setupRegisteredState();
             if (window.asTrack) asTrack('purchase', { items: [WORKSHOP] });
           } else {
-            $('reservar-form-wrap').style.display = '';
+            $('reservar-agotado').style.display = '';
+            $('reservar-form-wrap').style.display = AGOTADO ? 'none' : '';
             showMsg('Todavía no vemos la confirmación de tu pago. Si ya pagaste, esperá un momento y actualizá la página.', 'error');
           }
         })
         .catch(function(){
           $('reservar-checking').style.display = 'none';
-          $('reservar-form-wrap').style.display = '';
+          $('reservar-agotado').style.display = '';
+          $('reservar-form-wrap').style.display = AGOTADO ? 'none' : '';
         });
     }
 
